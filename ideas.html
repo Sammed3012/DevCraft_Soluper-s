@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Ideas - OpenConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-gray-50 text-slate-900">
+
+    <!-- Navigation (Injected) -->
+
+    <main class="min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 py-8">
+
+            <!-- Search & Filters -->
+            <div
+                class="mb-8 flex flex-col md:flex-row gap-4 justify-between items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm sticky top-20 z-30">
+                <div class="relative w-full md:w-96">
+                    <ion-icon name="search-outline" class="absolute left-3 top-3 text-slate-400 text-lg"></ion-icon>
+                    <input type="text" id="search-input" placeholder="Search ideas, skills, people..."
+                        class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm">
+                </div>
+
+                <div class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 hide-scrollbar">
+                    <button
+                        class="px-4 py-2 bg-slate-900 text-white rounded-full text-sm font-medium whitespace-nowrap shadow-md hover:bg-slate-800 transition-colors">All</button>
+                    <button
+                        class="px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-full text-sm font-medium whitespace-nowrap hover:bg-slate-50 transition-colors">Tech</button>
+                    <button
+                        class="px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-full text-sm font-medium whitespace-nowrap hover:bg-slate-50 transition-colors">Art</button>
+                    <button
+                        class="px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-full text-sm font-medium whitespace-nowrap hover:bg-slate-50 transition-colors">Business</button>
+                    <button
+                        class="px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-full text-sm font-medium whitespace-nowrap hover:bg-slate-50 transition-colors">Social</button>
+                </div>
+            </div>
+
+            <!-- Grid Content -->
+            <div id="ideas-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-24">
+                <!-- Loaded via JS -->
+                <div class="col-span-full text-center py-20">
+                    <div
+                        class="animate-spin inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mb-4">
+                    </div>
+                    <p class="text-slate-500">Discovering ideas...</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+
+    <!-- Render Logic -->
+    <script type="module">
+        import { renderNavigation, loadSidebarUser } from './js/components/Navigation.js';
+        import { renderIdeaCard } from './js/components/IdeaCard.js';
+
+        // 1. Navigation
+        renderNavigation('explore');
+        loadSidebarUser();
+
+        // 2. Fetch Data
+        document.addEventListener('DOMContentLoaded', async () => {
+            const grid = document.getElementById('ideas-grid');
+            const { data: { user } } = await supabase.auth.getUser();
+
+            const { data: ideas, error } = await supabase
+                .from('ideas')
+                .select(`*, profiles(*)`)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                grid.innerHTML = '<p class="col-span-full text-center text-red-500">Failed to load content.</p>';
+                return;
+            }
+
+            if (ideas.length === 0) {
+                grid.innerHTML = '<p class="col-span-full text-center text-slate-500">No ideas found.</p>';
+                return;
+            }
+
+            // Render Grid
+            grid.innerHTML = ideas.map(idea => renderIdeaCard(idea, user)).join('');
+
+            // Search Listener
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = ideas.filter(i => i.title.toLowerCase().includes(term) || i.description.toLowerCase().includes(term));
+                grid.innerHTML = filtered.length > 0
+                    ? filtered.map(idea => renderIdeaCard(idea, user)).join('')
+                    : '<p class="col-span-full text-center text-slate-500 py-10">No matches found.</p>';
+            });
+        });
+    </script>
+</body>
+
+</html>

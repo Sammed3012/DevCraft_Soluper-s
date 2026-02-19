@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenConnect - AI-Powered Team Formation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-gray-50 text-slate-900 font-sans antialiased">
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white text-lg font-bold shadow-sm">
+                    <ion-icon name="prism"></ion-icon>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-slate-900">OpenConnect</span>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-500">
+                <a href="#features" class="hover:text-slate-900 transition-colors">Features</a>
+                <a href="#developers" class="hover:text-slate-900 transition-colors">Developers</a>
+                <a href="#pricing" class="hover:text-slate-900 transition-colors">Pricing</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="auth.html"
+                    class="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">Log In</a>
+                <a href="auth.html"
+                    class="px-4 py-2 bg-slate-900 text-white text-sm font-bold rounded-lg hover:bg-slate-800 transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+                    Sign Up
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-20 pb-32 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-semibold uppercase tracking-wider mb-6 animate-enter"
+                style="animation-delay: 0.1s">
+                <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                Now with AI Matching V2
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-bold text-slate-900 tracking-tight mb-6 leading-tight animate-enter"
+                style="animation-delay: 0.2s">
+                Build your dream team <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">in seconds, not
+                    weeks.</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto mb-10 leading-relaxed animate-enter"
+                style="animation-delay: 0.3s">
+                OpenConnect uses advanced skill matching algorithms to pair developers, designers, and founders. Stop
+                searching, start building.
+            </p>
+
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4 animate-enter"
+                style="animation-delay: 0.4s">
+                <a href="auth.html"
+                    class="px-8 py-3.5 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 hover:bg-blue-700 hover:shadow-blue-600/30 transition-all transform hover:-translate-y-1 w-full md:w-auto">
+                    Get Started Free
+                </a>
+                <a href="javascript:void(0)" id="watch-demo-btn"
+                    class="px-8 py-3.5 bg-white text-slate-700 font-bold border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all w-full md:w-auto flex items-center justify-center gap-2">
+                    <ion-icon name="play-circle-outline" class="text-xl"></ion-icon>
+                    Watch Demo
+                </a>
+            </div>
+
+            <!-- Dashboard Preview -->
+            <div class="mt-20 relative mx-auto max-w-5xl rounded-2xl border border-slate-200 shadow-2xl overflow-hidden animate-enter"
+                style="animation-delay: 0.6s">
+                <div class="bg-slate-100 h-8 w-full flex items-center px-4 gap-2 border-b border-slate-200">
+                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                </div>
+                <img src="https://placehold.co/1200x800/f8fafc/e2e8f0?text=Dashboard+Preview" class="w-full opacity-90">
+                <!-- In a real app, use a screenshot of the actual dashboard here -->
+                <div class="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent pointer-events-none"></div>
+            </div>
+        </div>
+
+        <!-- Background Elements -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+            <div
+                class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-100/50 rounded-full blur-3xl opacity-60">
+            </div>
+            <div
+                class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-100/50 rounded-full blur-3xl opacity-60">
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section id="features" class="py-24 bg-white border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 md:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Everything needed to launch.</h2>
+                <p class="text-slate-500 text-lg">From idea validation to team formation, OpenConnect provides the tools
+                    modern builders rely on.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div
+                    class="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-200 transition-all hover:shadow-lg group">
+                    <div
+                        class="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-2xl text-blue-600 mb-6 group-hover:scale-110 transition-transform">
+                        <ion-icon name="color-wand"></ion-icon>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">AI Matching Engine</h3>
+                    <p class="text-slate-500 leading-relaxed">Our V2 algorithm analyzes skills, availability, and
+                        experience to find your perfect co-founder instantly.</p>
+                </div>
+
+                <!-- Card 2 -->
+                <div
+                    class="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:border-purple-200 transition-all hover:shadow-lg group">
+                    <div
+                        class="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-2xl text-purple-600 mb-6 group-hover:scale-110 transition-transform">
+                        <ion-icon name="pulse"></ion-icon>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Project Health</h3>
+                    <p class="text-slate-500 leading-relaxed">Visualize skill gaps and team readiness with real-time
+                        analytics dashboards for every project.</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div
+                    class="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:border-green-200 transition-all hover:shadow-lg group">
+                    <div
+                        class="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-2xl text-green-600 mb-6 group-hover:scale-110 transition-transform">
+                        <ion-icon name="globe"></ion-icon>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Global Community</h3>
+                    <p class="text-slate-500 leading-relaxed">Connect with thousands of developers worldwide. Join
+                        hackathons, share ideas, and ship products.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-slate-200 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 bg-slate-800 rounded flex items-center justify-center text-white text-xs">
+                    <ion-icon name="prism"></ion-icon>
+                </div>
+                <span class="font-bold text-slate-900">OpenConnect</span>
+            </div>
+            <div class="flex gap-6 text-sm text-slate-500 font-medium">
+                <a href="#" class="hover:text-slate-900">Privacy</a>
+                <a href="#" class="hover:text-slate-900">Terms</a>
+                <a href="#" class="hover:text-slate-900">Twitter</a>
+                <a href="#" class="hover:text-slate-900">GitHub</a>
+            </div>
+            <p class="text-xs text-slate-400">© 2026 OpenConnect Inc.</p>
+        </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script>
+        // Simple Auth Check to Redirect if Logged In
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                // Change "Get Started" to "Go to Dashboard"
+                const ctas = document.querySelectorAll('a[href="auth.html"]');
+                ctas.forEach(cta => {
+                    if (cta.innerText.includes('Get Started')) {
+                        cta.innerText = 'Go to Dashboard';
+                        cta.href = 'dashboard.html';
+                    }
+                });
+            }
+        });
+    </script>
+    <script type="module">
+        import { DemoModal } from './js/components/DemoModal.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Modal
+            const demoModal = new DemoModal('https://www.youtube.com/embed/ScMzIvxBSi4?autoplay=1'); // Setup example video
+
+            // Attach to Button
+            const watchBtn = document.getElementById('watch-demo-btn');
+            if (watchBtn) {
+                watchBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    demoModal.open();
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

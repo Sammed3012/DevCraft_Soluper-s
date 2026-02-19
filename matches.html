@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Matches - OpenConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-gray-50 text-slate-900 font-sans antialiased">
+    <!-- Navbar injected via Layout -->
+
+    <div class="max-w-7xl mx-auto px-4 py-8 space-y-6 animate-enter">
+        <header class="flex justify-between items-end border-b border-slate-200 pb-4 mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Find Your Perfect Match</h1>
+                <p class="text-slate-500 mt-2">Discover projects that align with your skills and goals.</p>
+            </div>
+            <div class="flex gap-2">
+                <select class="saas-input w-40">
+                    <option>Sort by Match %</option>
+                    <option>Newest</option>
+                    <option>Popular</option>
+                </select>
+                <button class="btn-secondary px-3 py-2 flex items-center gap-2">
+                    <ion-icon name="filter-outline"></ion-icon> Filter
+                </button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="matches-grid">
+            <!-- Loading State -->
+            <div class="col-span-full py-20 flex flex-col items-center justify-center text-slate-400">
+                <div class="w-12 h-12 border-4 border-slate-200 border-t-blue-500 rounded-full animate-spin mb-4"></div>
+                Analyzing compatibility matrix...
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+
+    <script type="module">
+        import { Layout } from './js/components/Layout.js';
+
+        // Init Layout
+        new Layout('matches');
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) { window.location.href = 'auth.html'; return; }
+
+            loadMatches();
+        });
+
+        async function loadMatches() {
+            const container = document.getElementById('matches-grid');
+
+            // Mock Match Data (since we need ideas to run matching against)
+            // In a real scenario, we'd fetch all open ideas and run logic, or call a specific "get_user_matches" RPC if it existed.
+            // For now, we fetch recent ideas and "simulate" matching for visual redesign purposes.
+
+            const { data: ideas, error } = await supabase
+                .from('ideas')
+                .select('*, profiles(full_name, avatar_url, role)')
+                .order('created_at', { ascending: false })
+                .limit(9);
+
+            if (ideas && ideas.length > 0) {
+                container.innerHTML = ideas.map(idea => {
+                    // Simulate Match Score
+                    const score = Math.floor(Math.random() * (99 - 60) + 60);
+                    const color = score > 90 ? 'green' : (score > 75 ? 'blue' : 'yellow');
+
+                    return `
+                     <div class="saas-card group hover:shadow-lg transition-all border border-slate-200 overflow-hidden relative">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-${color}-500"></div>
+                        
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="bg-${color}-50 text-${color}-700 border border-${color}-100 text-xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">
+                                    ${score}% Match
+                                </span>
+                                <button class="text-slate-400 hover:text-slate-900">
+                                    <ion-icon name="bookmark-outline" class="text-xl"></ion-icon>
+                                </button>
+                            </div>
+
+                            <a href="idea-details.html?id=${idea.id}" class="block group-hover:text-blue-600 transition-colors">
+                                <h3 class="text-xl font-bold text-slate-900 mb-1 truncate">${idea.title}</h3>
+                            </a>
+                            <p class="text-sm text-slate-500 mb-4 line-clamp-3 leading-relaxed">${idea.description}</p>
+                            
+                            <!-- Skills -->
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                ${(idea.tags || ['General']).slice(0, 3).map(tag =>
+                        `<span class="px-2 py-1 bg-slate-50 border border-slate-200 rounded text-xs text-slate-600 font-medium font-mono">${tag}</span>`
+                    ).join('')}
+                                ${(idea.tags?.length > 3) ? `<span class="px-2 py-1 text-xs text-slate-400 font-medium">+${idea.tags.length - 3}</span>` : ''}
+                            </div>
+
+                            <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                                <div class="flex items-center gap-2">
+                                     <img src="${idea.profiles?.avatar_url || 'https://ui-avatars.com/api/?name=User'}" class="w-8 h-8 rounded-full border border-slate-100">
+                                     <div class="leading-tight">
+                                        <p class="text-xs font-bold text-slate-900">${idea.profiles?.full_name || 'Anonymous'}</p>
+                                        <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wider">${idea.profiles?.role || 'Founder'}</p>
+                                     </div>
+                                </div>
+                                <button onclick="window.location.href='idea-details.html?id=${idea.id}'" class="p-2 rounded-lg bg-slate-900 text-white hover:bg-black transition-colors shadow-sm">
+                                    <ion-icon name="arrow-forward-outline"></ion-icon>
+                                </button>
+                            </div>
+                        </div>
+                     </div>`;
+                }).join('');
+            } else {
+                container.innerHTML = `<div class="col-span-full text-center py-20"><p class="text-slate-400">No matches found at the moment.</p></div>`;
+            }
+        }
+    </script>
+</body>
+
+</html>

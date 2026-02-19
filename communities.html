@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communities - OpenConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-gray-50 text-slate-900">
+
+    <!-- Navigation -->
+    <!-- Injected -->
+
+    <main class="min-h-screen py-8 pb-24">
+
+        <div class="max-w-7xl mx-auto px-4 md:px-8">
+
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900">Student Communities</h1>
+                    <p class="text-slate-500">Join groups, discuss topics, and find like-minded innovators.</p>
+                </div>
+
+                <button onclick="document.getElementById('create-community-modal').classList.remove('hidden')"
+                    class="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold transition-transform active:scale-95 flex items-center gap-2 shadow-lg">
+                    <ion-icon name="add-circle-outline" class="text-xl"></ion-icon>
+                    Create Community
+                </button>
+            </div>
+
+            <!-- Communities Grid -->
+            <div id="communities-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Loading -->
+                <div class="col-span-full py-20 text-center">
+                    <div
+                        class="animate-spin inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mb-4">
+                    </div>
+                    <p class="text-slate-500">Finding communities...</p>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Create Community Modal (New Style) -->
+    <div id="create-community-modal" class="fixed inset-0 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title"
+        role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen px-4 py-8">
+            <div class="fixed inset-0 bg-slate-900/50 transition-opacity backdrop-blur-sm" aria-hidden="true"
+                onclick="document.getElementById('create-community-modal').classList.add('hidden')"></div>
+
+            <div
+                class="relative bg-white rounded-2xl shadow-xl w-full max-w-lg p-8 border border-slate-200 transform transition-all">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-slate-900">Create New Community</h3>
+                    <button class="text-slate-400 hover:text-slate-600"
+                        onclick="document.getElementById('create-community-modal').classList.add('hidden')">
+                        <ion-icon name="close-outline" class="text-2xl"></ion-icon>
+                    </button>
+                </div>
+
+                <form id="create-community-form" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">Community
+                            Name</label>
+                        <input type="text" id="comm-name" required
+                            class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder-slate-400 font-semibold">
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">Description</label>
+                        <textarea id="comm-desc" required rows="3"
+                            class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder-slate-400"
+                            placeholder="What is this community about?"></textarea>
+                    </div>
+
+                    <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
+                        <button type="button"
+                            onclick="document.getElementById('create-community-modal').classList.add('hidden')"
+                            class="px-5 py-2.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold transition-colors">Cancel</button>
+                        <button type="submit" id="btn-create-comm"
+                            class="px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition-transform active:scale-95 shadow-md">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/communities.js"></script>
+    <!-- Assuming this exists and has logic, might need update if it renders HTML inline -->
+
+    <script type="module">
+        import { renderNavigation, loadSidebarUser } from './js/components/Navigation.js';
+        renderNavigation('communities');
+        loadSidebarUser();
+    </script>
+</body>
+
+</html>
