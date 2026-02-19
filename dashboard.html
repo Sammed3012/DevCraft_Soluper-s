@@ -9,32 +9,32 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="bg-gray-50 text-slate-900 font-sans antialiased">
 
-    <!-- Layout Container (Injected via JS) -->
-
     <!-- Main Content for Dashboard -->
-    <div id="dashboard-content" class="space-y-8 animate-enter">
+    <div id="dashboard-content" class="space-y-8 animate-enter pb-16">
 
         <!-- Welcome Section -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <h1 class="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight" id="welcome-msg">Good Morning,
-                    Innovator</h1>
-                <p class="text-slate-500 mt-1">Here's what's happening with your projects today.</p>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight" id="welcome-msg">Good Morning, Innovator
+                </h1>
+                <p class="text-slate-500 mt-1">Here's your daily roundup.</p>
             </div>
 
             <div class="flex gap-3">
                 <button
-                    class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 font-medium rounded-lg hover:bg-slate-50 shadow-sm transition-colors"
+                    class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 font-medium rounded-xl hover:bg-slate-50 hover:border-slate-300 shadow-sm transition-all text-sm"
                     onclick="window.location.href='matches.html'">
-                    <ion-icon name="telescope-outline" class="text-lg text-blue-500"></ion-icon>
+                    <ion-icon name="telescope-outline" class="text-lg text-green-500"></ion-icon>
                     <span>Find Matches</span>
                 </button>
                 <button
-                    class="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white font-medium rounded-lg hover:bg-slate-800 shadow-sm transition-colors"
+                    class="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white font-medium rounded-xl hover:bg-slate-800 shadow-lg hover:shadow-xl transition-all transform active:scale-95 text-sm"
                     onclick="window.location.href='create-idea.html'">
                     <ion-icon name="add-circle-outline" class="text-lg"></ion-icon>
                     <span>New Project</span>
@@ -42,173 +42,212 @@
             </div>
         </div>
 
-        <!-- 1. Stats Grid -->
+        <!-- 1. Stats Grid with Charts -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Stat 1 -->
+            <!-- Stat 1: Total Views -->
             <div
-                class="saas-card p-5 flex flex-col justify-between h-32 hover:border-blue-200 group transition-all bg-white">
-                <div class="flex justify-between items-start">
-                    <span class="text-slate-500 text-sm font-medium">Active Projects</span>
-                    <div
-                        class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <ion-icon name="folder-open-outline"></ion-icon>
-                    </div>
+                class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+                    <ion-icon name="eye" class="text-6xl text-blue-500"></ion-icon>
                 </div>
-                <div>
-                    <span class="text-3xl font-bold text-slate-900" id="stat-projects">0</span>
-                    <span
-                        class="text-xs text-green-600 font-medium ml-2 bg-green-50 px-1.5 py-0.5 rounded flex inline-flex items-center gap-0.5">
-                        <ion-icon name="arrow-up"></ion-icon> 2
-                    </span>
+                <h3 class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">Profile Views</h3>
+                <div class="text-3xl font-bold text-slate-900 mb-2" id="stat-views">0</div>
+                <div
+                    class="text-green-600 text-xs font-bold bg-green-50 px-2 py-1 rounded-lg inline-flex items-center gap-1">
+                    <ion-icon name="trending-up"></ion-icon> +12% this week
+                </div>
+                <div class="h-10 mt-4">
+                    <canvas id="chart-views"></canvas>
                 </div>
             </div>
 
-            <!-- Stat 2 -->
+            <!-- Stat 2: Active Projects -->
             <div
-                class="saas-card p-5 flex flex-col justify-between h-32 hover:border-purple-200 group transition-all bg-white">
-                <div class="flex justify-between items-start">
-                    <span class="text-slate-500 text-sm font-medium">Match Score</span>
-                    <div
-                        class="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <ion-icon name="analytics-outline"></ion-icon>
-                    </div>
+                class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+                    <ion-icon name="folder-open" class="text-6xl text-indigo-500"></ion-icon>
                 </div>
-                <div>
-                    <span class="text-3xl font-bold text-slate-900" id="stat-score">85</span>
-                    <span class="text-xs text-slate-400 font-medium ml-2">Avg. Optimization</span>
+                <h3 class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">Active Projects</h3>
+                <div class="text-3xl font-bold text-slate-900 mb-2" id="stat-projects">0</div>
+                <div
+                    class="text-indigo-600 text-xs font-bold bg-indigo-50 px-2 py-1 rounded-lg inline-flex items-center gap-1">
+                    <ion-icon name="layers"></ion-icon> 2 Pending Review
+                </div>
+                <div class="h-1 w-full bg-slate-100 rounded-full mt-8 overflow-hidden">
+                    <div class="h-full bg-indigo-500 w-2/3 rounded-full"></div>
                 </div>
             </div>
 
-            <!-- Stat 3 -->
+            <!-- Stat 3: Match Score -->
             <div
-                class="saas-card p-5 flex flex-col justify-between h-32 hover:border-orange-200 group transition-all bg-white">
-                <div class="flex justify-between items-start">
-                    <span class="text-slate-500 text-sm font-medium">Pending Invites</span>
-                    <div
-                        class="w-8 h-8 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <ion-icon name="mail-unread-outline"></ion-icon>
-                    </div>
+                class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+                    <ion-icon name="analytics" class="text-6xl text-emerald-500"></ion-icon>
                 </div>
-                <div>
-                    <span class="text-3xl font-bold text-slate-900" id="stat-invites">3</span>
-                    <span class="text-xs text-orange-600 font-medium ml-2 cursor-pointer hover:underline">View
-                        All</span>
+                <h3 class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">Match Score</h3>
+                <div class="text-3xl font-bold text-slate-900 mb-2" id="stat-score">92</div>
+                <div
+                    class="text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-lg inline-flex items-center gap-1">
+                    <ion-icon name="thumbs-up"></ion-icon> High Relevance
+                </div>
+                <div class="h-10 mt-4 flex items-end justify-between px-1 gap-1">
+                    <div class="w-2 bg-emerald-200 rounded-sm h-[40%]"></div>
+                    <div class="w-2 bg-emerald-300 rounded-sm h-[60%]"></div>
+                    <div class="w-2 bg-emerald-400 rounded-sm h-[50%]"></div>
+                    <div class="w-2 bg-emerald-500 rounded-sm h-[80%]"></div>
+                    <div class="w-2 bg-emerald-600 rounded-sm h-[100%]"></div>
                 </div>
             </div>
 
-            <!-- Stat 4 -->
-            <div
-                class="saas-card p-5 flex flex-col justify-between h-32 hover:border-green-200 group transition-all bg-white">
-                <div class="flex justify-between items-start">
-                    <span class="text-slate-500 text-sm font-medium">Profile Views</span>
-                    <div
-                        class="w-8 h-8 rounded-lg bg-green-50 text-green-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <ion-icon name="eye-outline"></ion-icon>
-                    </div>
+            <!-- Stat 4: Messages -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden cursor-pointer"
+                onclick="window.location.href='messages.html'">
+                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+                    <ion-icon name="chatbubbles" class="text-6xl text-orange-500"></ion-icon>
                 </div>
-                <div>
-                    <span class="text-3xl font-bold text-slate-900" id="stat-views">12</span>
-                    <span class="text-xs text-green-600 font-medium ml-2">+4 this week</span>
+                <h3 class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">Unread Messages</h3>
+                <div class="text-3xl font-bold text-slate-900 mb-2" id="stat-msgs">5</div>
+                <div
+                    class="text-orange-600 text-xs font-bold bg-orange-50 px-2 py-1 rounded-lg inline-flex items-center gap-1 hover:bg-orange-100 transition-colors">
+                    <ion-icon name="mail-unread"></ion-icon> View Inbox
+                </div>
+                <div class="flex -space-x-2 overflow-hidden py-4 pl-1">
+                    <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white"
+                        src="https://ui-avatars.com/api/?name=Alice" alt="">
+                    <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white"
+                        src="https://ui-avatars.com/api/?name=Bob" alt="">
+                    <div
+                        class="h-6 w-6 rounded-full ring-2 ring-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">
+                        +3</div>
                 </div>
             </div>
         </div>
 
-        <!-- 2. AI Suggestions Row (Horizontal Scroll) -->
-        <section>
-            <div class="flex justify-between items-end mb-4 px-1">
-                <div>
-                    <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2"><ion-icon name="sparkles"
-                            class="text-indigo-500"></ion-icon> Recommended for You</h2>
-                    <p class="text-sm text-slate-500">AI-curated based on your skills and preferences.</p>
-                </div>
-                <div class="flex gap-2">
-                    <button
-                        class="w-8 h-8 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-300 transition-colors">
-                        <ion-icon name="chevron-back-outline"></ion-icon>
-                    </button>
-                    <button
-                        class="w-8 h-8 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-300 transition-colors">
-                        <ion-icon name="chevron-forward-outline"></ion-icon>
-                    </button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="suggestions-grid">
-                <!-- Example items loaded via JS -->
-                <div
-                    class="saas-card p-6 border-dashed border-2 bg-slate-50 flex items-center justify-center text-slate-400">
-                    <span class="text-sm flex items-center gap-2"><ion-icon name="sync" class="animate-spin"></ion-icon>
-                        Analyziing...</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3. Recent Activity / Feed -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            <!-- Feed -->
+            <!-- 2. Main Content Area -->
             <div class="lg:col-span-2 space-y-6">
-                <div class="flex justify-between items-center mb-1">
-                    <h2 class="text-lg font-bold text-slate-900">Recent Projects</h2>
-                    <button class="text-sm font-medium text-blue-600 hover:text-blue-800"
-                        onclick="window.location.href='ideas.html'">View All</button>
-                </div>
 
-                <div id="feed-container" class="space-y-4">
-                    <!-- Loaded via JS -->
-                    <div class="text-center py-10 border border-dashed border-slate-200 rounded-xl bg-slate-50">
-                        <p class="text-slate-400 text-sm">Loading feed...</p>
+                <!-- LIVE FEED SECTION -->
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+                        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <span class="relative flex h-3 w-3">
+                                <span
+                                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                            </span>
+                            Live Activity
+                        </h2>
+                        <button class="text-xs font-bold text-slate-400 hover:text-slate-600">Filter</button>
+                    </div>
+
+                    <!-- Feed Items (Simulating Real-time) -->
+                    <div id="live-feed-stream" class="flex flex-col">
+                        <!-- Items injected via JS -->
+                        <div class="p-8 text-center text-slate-400 text-sm">Waiting for live updates...</div>
                     </div>
                 </div>
+
+                <!-- AI Recommendations -->
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <ion-icon name="sparkles" class="text-yellow-400"></ion-icon> AI Recommendations
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="suggestions-grid">
+                        <!-- Loading State -->
+                        <div
+                            class="col-span-full py-12 flex flex-col items-center justify-center text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">
+                            <ion-icon name="planet-outline" class="text-4xl mb-2 animate-spin-slow"></ion-icon>
+                            <p class="text-sm">Scanning the galaxy for opportunities...</p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Right Widget: Top Skills -->
+            <!-- 3. Sidebar Widgets -->
             <div class="space-y-6">
-                <div class="saas-card p-5 bg-white">
-                    <h3 class="font-bold text-slate-900 text-sm mb-4">Trending Skills</h3>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-8 h-8 rounded bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">
-                                    R</div>
-                                <span class="text-sm font-medium text-slate-700">React</span>
+                <!-- Project Progress -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <h3 class="font-bold text-slate-900 text-sm mb-4 flex justify-between items-center">
+                        Top Skills Growth
+                        <ion-icon name="trending-up" class="text-green-500"></ion-icon>
+                    </h3>
+                    <div class="space-y-5">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="font-bold text-slate-700">React.js</span>
+                                <span class="text-slate-500">85%</span>
                             </div>
-                            <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded">+12%</span>
+                            <div class="w-full bg-slate-100 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-blue-400 to-blue-600 h-2 rounded-full"
+                                    style="width: 85%"></div>
+                            </div>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-8 h-8 rounded bg-yellow-100 flex items-center justify-center text-yellow-600 font-bold text-xs">
-                                    P</div>
-                                <span class="text-sm font-medium text-slate-700">Python</span>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="font-bold text-slate-700">System Design</span>
+                                <span class="text-slate-500">60%</span>
                             </div>
-                            <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded">+8%</span>
+                            <div class="w-full bg-slate-100 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-purple-400 to-purple-600 h-2 rounded-full"
+                                    style="width: 60%"></div>
+                            </div>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-8 h-8 rounded bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-xs">
-                                    T</div>
-                                <span class="text-sm font-medium text-slate-700">Three.js</span>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="font-bold text-slate-700">Cloud (AWS)</span>
+                                <span class="text-slate-500">45%</span>
                             </div>
-                            <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded">+24%</span>
+                            <div class="w-full bg-slate-100 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-orange-400 to-orange-600 h-2 rounded-full"
+                                    style="width: 45%"></div>
+                            </div>
                         </div>
                     </div>
-                    <button
-                        class="w-full mt-4 text-xs font-bold text-slate-500 hover:text-slate-900 border-t border-slate-100 pt-3">View
-                        Analytics</button>
                 </div>
 
-                <!-- Footer Links -->
-                <div class="text-xs text-slate-400 flex flex-wrap gap-x-4 gap-y-2 px-2">
-                    <a href="#" class="hover:text-slate-600">About</a>
-                    <a href="#" class="hover:text-slate-600">Privacy</a>
-                    <a href="#" class="hover:text-slate-600">Terms</a>
-                    <a href="#" class="hover:text-slate-600">Feedback</a>
-                    <span>© 2026 OpenConnect</span>
+                <!-- Upcoming Events -->
+                <div class="bg-slate-900 rounded-2xl p-6 text-white relative overflow-hidden shadow-lg group">
+                    <div
+                        class="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-125 transition-transform duration-700">
+                        <ion-icon name="calendar" class="text-9xl text-white"></ion-icon>
+                    </div>
+                    <h3 class="font-bold text-sm mb-4 uppercase tracking-wider text-slate-400">Upcoming</h3>
+
+                    <div class="relative z-10 space-y-4">
+                        <div class="flex gap-4 items-center">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur flex flex-col items-center justify-center text-center border border-white/10">
+                                <span class="text-[10px] uppercase font-bold text-slate-400">Feb</span>
+                                <span class="text-lg font-bold text-white leading-none">24</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm">Hackathon Kickoff</h4>
+                                <p class="text-xs text-slate-400">Global Innovation Challenge</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4 items-center">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur flex flex-col items-center justify-center text-center border border-white/10">
+                                <span class="text-[10px] uppercase font-bold text-slate-400">Feb</span>
+                                <span class="text-lg font-bold text-white leading-none">28</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm">Team Demo Day</h4>
+                                <p class="text-xs text-slate-400">Present your prototype</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
             </div>
+
         </div>
 
     </div>
@@ -220,137 +259,202 @@
 
     <script type="module">
         import { Layout } from './js/components/Layout.js';
-        import { AIService } from './js/ai-service.js';
 
         // 1. Initialize Layout
         new Layout('dashboard');
 
-        // 2. Dashboard Logic
+        // 2. Chart.js Init (Tiny Trend Chart)
+        const ctx = document.getElementById('chart-views').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+                datasets: [{
+                    data: [12, 19, 15, 25, 22, 30, 35],
+                    borderColor: '#16a34a',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { x: { display: false }, y: { display: false } }
+            }
+        });
+
+        // 3. Dashboard Data Logic
         const initDashboard = async () => {
-            if (!window.supabase) { console.error("Supabase not loaded"); return; }
+            const { data: { user } } = await supabase.auth.getSession().then(({ data }) => data);
 
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) { window.location.href = 'auth.html'; return; }
+            if (user) {
+                document.getElementById('welcome-msg').textContent = `Good Morning, ${user.user_metadata.full_name?.split(' ')[0] || 'Innovator'}`;
+                loadStats(user.id);
+                loadRecommendations();
+                // Initialize Live Feed
+                initLiveFeed();
+            }
+        };
 
-            const user = session.user;
-            const welcomeMsg = document.getElementById('welcome-msg');
-            if (welcomeMsg) welcomeMsg.textContent = `Good Morning, ${user.user_metadata.full_name?.split(' ')[0] || 'Innovator'}`;
+        async function loadStats(userId) {
+            // Mock Stats for Demo Visuals
+            animateValue("stat-views", 0, 124, 2000);
+            animateValue("stat-projects", 0, 3, 1500);
+        }
 
-            loadDashboardFeed();
-            loadProjectStats(user.id);
-            loadSuggestions(user.id);
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            if (!obj) return;
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        async function loadRecommendations() {
+            const container = document.getElementById('suggestions-grid');
+            setTimeout(() => {
+                container.innerHTML = `
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-green-300 transition-colors group cursor-pointer relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-green-400 to-green-600"></div>
+                        <div class="flex justify-between items-start mb-2">
+                             <span class="text-[10px] font-bold uppercase tracking-wider text-green-600 bg-green-50 px-2 py-1 rounded">High Match</span>
+                             <ion-icon name="star" class="text-yellow-400"></ion-icon>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-1 group-hover:text-green-600 transition-colors">EcoTrack Analytics</h4>
+                        <p class="text-xs text-slate-500 mb-4 line-clamp-2">A platform for tracking carbon footprints using ML. Matches your Python & Data Science skills.</p>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded">Python</span>
+                             <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded">ML</span>
+                        </div>
+                    </div>
+
+                     <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-blue-300 transition-colors group cursor-pointer relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-blue-400 to-blue-600"></div>
+                        <div class="flex justify-between items-start mb-2">
+                             <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-1 rounded">Trending</span>
+                             <ion-icon name="flash" class="text-yellow-400"></ion-icon>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-1 group-hover:text-blue-600 transition-colors">EduVR Platform</h4>
+                        <p class="text-xs text-slate-500 mb-4 line-clamp-2">Virtual reality classrooms for remote education. Looking for frontend developers.</p>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded">React</span>
+                             <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded">Three.js</span>
+                        </div>
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        // --- LIVE FEED LOGIC ---
+        // Simulates real-time updates from the network
+        function initLiveFeed() {
+            const feedContainer = document.getElementById('live-feed-stream');
+            if (!feedContainer) return;
+
+            // Initial Feed Data
+            const initialItems = [
+                { type: 'project_new', user: 'Alex Chen', object: 'Quantum UI Kit', time: '2m ago', icon: 'rocket', color: 'bg-purple-100 text-purple-600' },
+                { type: 'collaboration', user: 'Sarah Miller', object: 'GreenEarth API', time: '15m ago', icon: 'people', color: 'bg-blue-100 text-blue-600' },
+                { type: 'match', user: 'David Kim', object: 'AI Resume Builder', time: '1h ago', icon: 'check-checkmark', color: 'bg-green-100 text-green-600' }
+            ];
+
+            renderFeedItems(initialItems, feedContainer);
+
+            // Simulate incoming "Live" events
+            setInterval(() => {
+                const actions = [
+                    { type: 'project_new', object: 'CryptoDash', icon: 'rocket', color: 'bg-purple-100 text-purple-600' },
+                    { type: 'trending', object: 'React Patterns', icon: 'flame', color: 'bg-orange-100 text-orange-600' },
+                    { type: 'join', object: 'OpenSource Hub', icon: 'log-in', color: 'bg-teal-100 text-teal-600' }
+                ];
+
+                // Random Event
+                const action = actions[Math.floor(Math.random() * actions.length)];
+                const names = ['Jordan Lee', 'Morgan Smith', 'Casey Jones', 'Riley Wilson'];
+                const name = names[Math.floor(Math.random() * names.length)];
+
+                const newItem = {
+                    user: name,
+                    object: action.object,
+                    time: 'Just now',
+                    icon: action.icon,
+                    color: action.color,
+                    isNew: true
+                };
+
+                // Prepend new item
+                const el = createFeedItem(newItem);
+                feedContainer.prepend(el);
+
+                // Remove old items if too many
+                if (feedContainer.children.length > 5) {
+                    feedContainer.lastElementChild.remove();
+                }
+
+            }, 8000); // New event every 8 seconds
+        }
+
+        function renderFeedItems(items, container) {
+            container.innerHTML = '';
+            items.forEach(item => {
+                container.appendChild(createFeedItem(item));
+            });
+        }
+
+        function createFeedItem(item) {
+            const div = document.createElement('div');
+            // Adding animate-enter class if it's new
+            div.className = `p-4 border-b border-slate-50 hover:bg-slate-50 transition-colors flex gap-4 ${item.isNew ? 'animate-pulse-green' : ''}`;
+
+            let actionText = 'launched a new project';
+            if (item.icon === 'people') actionText = 'joined the team for';
+            if (item.icon === 'check-checkmark') actionText = 'matched with';
+            if (item.icon === 'flame') actionText = 'is trending in';
+            if (item.icon === 'log-in') actionText = 'joined the community';
+
+            div.innerHTML = `
+                <div class="w-10 h-10 rounded-full ${item.color} flex items-center justify-center flex-shrink-0 text-lg">
+                    <ion-icon name="${item.icon}"></ion-icon>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm text-slate-800">
+                        <span class="font-bold cursor-pointer hover:underline">${item.user}</span> 
+                        <span class="text-slate-500">${actionText}</span>
+                        <span class="font-bold cursor-pointer hover:text-green-600 transition-colors">${item.object}</span>
+                    </p>
+                    <p class="text-xs text-slate-400 mt-1">${item.time}</p>
+                </div>
+            `;
+            return div;
         }
 
         initDashboard();
-
-        // Feed Logic
-        async function loadDashboardFeed() {
-            const container = document.getElementById('feed-container');
-            if (!container) return;
-
-            const { data: ideas, error } = await supabase
-                .from('ideas')
-                .select('*, profiles(full_name, avatar_url)')
-                .order('created_at', { ascending: false })
-                .limit(5);
-
-            if (ideas && ideas.length > 0) {
-                container.innerHTML = ideas.map(idea => `
-                    <div class="saas-card p-4 flex gap-4 hover:border-blue-300 group cursor-pointer bg-white" onclick="window.location.href='idea-details.html?id=${idea.id}'">
-                         <!-- Image Thumbnail -->
-                         <div class="w-24 h-24 flex-shrink-0 bg-slate-100 rounded-lg overflow-hidden border border-slate-200 relative">
-                             ${idea.image_url
-                        ? `<img src="${idea.image_url}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">`
-                        : `<div class="w-full h-full flex items-center justify-center text-slate-300 text-2xl"><ion-icon name="image-outline"></ion-icon></div>`
-                    }
-                         </div>
-                         
-                         <!-- Content -->
-                         <div class="flex-1 min-w-0 py-1 flex flex-col">
-                             <div class="flex justify-between items-start mb-1">
-                                 <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-wide border border-blue-100">${idea.category || 'General'}</span>
-                                 <span class="text-[10px] text-slate-400 font-medium">${new Date(idea.created_at).toLocaleDateString()}</span>
-                             </div>
-                             <h3 class="text-base font-bold text-slate-900 truncate mb-1 group-hover:text-blue-600 transition-colors">${idea.title}</h3>
-                             <p class="text-sm text-slate-500 line-clamp-2 mb-2 leading-relaxed">${idea.description}</p>
-                             
-                             <!-- Footer -->
-                             <div class="flex items-center justify-between border-t border-slate-50 pt-2 mt-auto">
-                                 <div class="flex items-center gap-2">
-                                     <img src="${idea.profiles?.avatar_url || 'https://ui-avatars.com/api/?name=User'}" class="w-5 h-5 rounded-full border border-slate-100">
-                                     <span class="text-xs text-slate-600 font-medium truncate max-w-[100px]">${idea.profiles?.full_name || 'Anonymous'}</span>
-                                 </div>
-                                 <div class="flex items-center gap-3 text-xs text-slate-400">
-                                      <span class="flex items-center gap-1 hover:text-red-500 transition-colors"><ion-icon name="heart"></ion-icon> ${idea.upvotes_count || 0}</span>
-                                 </div>
-                             </div>
-                         </div>
-                    </div>
-                 `).join('');
-            } else {
-                container.innerHTML = `<div class="text-center py-10 border border-dashed border-slate-200 rounded-xl bg-slate-50"><p class="text-slate-400 text-sm">No recent activity.</p></div>`;
-            }
-        }
-
-        async function loadProjectStats(userId) {
-            const { count } = await supabase.from('ideas').select('*', { count: 'exact', head: true }).eq('user_id', userId);
-            const el = document.getElementById('stat-projects');
-            if (el) el.textContent = count || 0;
-        }
-
-        async function loadSuggestions(userId) {
-            const container = document.getElementById('suggestions-grid');
-            if (!container) return;
-
-            // 1. Get User Profile
-            let skills = "";
-            try {
-                const { data: profile } = await supabase.from('profiles').select('skills').eq('id', userId).single();
-                if (profile && profile.skills) skills = profile.skills.join(', ');
-            } catch (e) { }
-
-            // 2. AI Request
-            try {
-                const data = await AIService.getRecommendations(skills);
-                const recs = data.recommendations || [];
-
-                if (recs.length === 0) {
-                    container.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400 text-xs">No specific recommendations found. Add more skills to your profile!</div>`;
-                    return;
-                }
-
-                container.innerHTML = recs.slice(0, 3).map((rec, i) => {
-                    // Colors
-                    const colors = ['purple', 'blue', 'pink'];
-                    const color = colors[i % colors.length];
-
-                    return `
-                    <div class="saas-card p-5 relative overflow-hidden group cursor-pointer hover:-translate-y-1 bg-white flex flex-col h-full">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-${color}-500"></div>
-                        <div class="flex justify-between items-start mb-3 pl-2">
-                            <div class="w-10 h-10 rounded-lg bg-${color}-50 text-${color}-600 flex items-center justify-center text-xl shadow-sm border border-${color}-100">
-                                <ion-icon name="bulb-outline"></ion-icon>
-                            </div>
-                            <div class="flex flex-col items-end">
-                                 <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Top Pick</div>
-                            </div>
-                        </div>
-                        <div class="pl-2 flex-1 flex flex-col">
-                            <h4 class="font-bold text-slate-900 truncate mb-1">${rec.title}</h4>
-                            <p class="text-xs text-slate-500 mb-4 line-clamp-2 leading-relaxed">${rec.reason}</p>
-                            <div class="mt-auto">
-                                <button class="w-full py-2 bg-slate-50 text-slate-700 text-xs font-bold rounded hover:bg-slate-100 transition-colors border border-slate-200">View Similar</button>
-                            </div>
-                        </div>
-                    </div>`;
-                }).join('');
-
-            } catch (error) {
-                console.warn("AI Recs Failed", error);
-                container.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400 text-xs">AI Service Unavailable. (Is server.js running?)</div>`;
-            }
-        }
     </script>
+
+    <style>
+        @keyframes pulse-green {
+            0% {
+                background-color: rgba(34, 197, 94, 0.1);
+            }
+
+            100% {
+                background-color: transparent;
+            }
+        }
+
+        .animate-pulse-green {
+            animation: pulse-green 2s ease-out;
+        }
+    </style>
 </body>
 
 </html>

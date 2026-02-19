@@ -2,38 +2,112 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
+  /* Default (Light) Theme Variables */
   --bg-body: #F9FAFB;
-  /* Slate 50 */
   --bg-card: #FFFFFF;
-  --text-primary: #111827;
-  /* Gray 900 */
-  --text-secondary: #6B7280;
-  /* Gray 500 */
-  --text-tertiary: #9CA3AF;
-  /* Gray 400 */
-  --border-light: #E5E7EB;
-  /* Gray 200 */
-  --border-hover: #D1D5DB;
-  /* Gray 300 */
-  --primary: #2563EB;
-  /* Blue 600 */
-  --primary-hover: #1D4ED8;
-  /* Blue 700 */
+  --bg-card-secondary: #F8FAFC;
+  /* slate-50 */
+  --bg-card-dark: #1E293B;
+  /* slate-800 (used for icons) */
+
+  --text-primary: #0f172a;
+  /* slate-900 */
+  --text-secondary: #64748b;
+  /* slate-500 */
+  --text-secondary-dark: #475569;
+  /* slate-600 */
+
+  --border-light: #E2E8F0;
+  /* slate-200/100ish */
+  --border-hover: #CBD5E1;
+  /* slate-300 */
+
+  --primary: #4ade80;
+  /* green-400 - Light Green */
+  --primary-hover: #22c55e;
+  /* green-500 */
+
   --success: #10B981;
   --warning: #F59E0B;
   --danger: #EF4444;
+
   --radius-card: 12px;
-  /* Slightly tighter for SaaS feel */
   --radius-btn: 6px;
   --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Dark Theme Overrides */
+[data-theme="dark"] {
+  --bg-body: #0f172a;
+  /* slate-900 */
+  --bg-card: #1e293b;
+  /* slate-800 */
+  --bg-card-secondary: #334155;
+  /* slate-700 */
+  --bg-card-dark: #f8fafc;
+  /* Invert: slate-50 for icons */
+
+  --text-primary: #f8fafc;
+  /* slate-50 */
+  --text-secondary: #94a3b8;
+  /* slate-400 */
+  --text-secondary-dark: #cbd5e1;
+  /* slate-300 */
+
+  --border-light: #334155;
+  /* slate-700 */
+  --border-hover: #475569;
+  /* slate-600 */
+
+  --primary: #4ade80;
+  /* green-400 */
+  --primary-hover: #86efac;
+  /* green-300 */
+
+  --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+}
+
+/* "Bot" (Cyber/Hollow) Theme Overrides */
+[data-theme="bot"] {
+  --bg-body: #020617;
+  /* slate-950 */
+  --bg-card: #0f172a;
+  /* slate-900 with transparency usually */
+  --bg-card-secondary: #1e293b;
+  /* slate-800 */
+  --bg-card-dark: #22c55e;
+  /* Hacker Green for icons */
+
+  --text-primary: #e2e8f0;
+  /* slate-200 */
+  --text-secondary: #64748b;
+  /* slate-500 */
+  --text-secondary-dark: #94a3b8;
+  /* slate-400 */
+
+  --border-light: #1e293b;
+  /* slate-800 */
+  --border-hover: #4ade80;
+  /* green-400 (glowing borders) */
+
+  --primary: #4ade80;
+  /* green-400 */
+  --primary-hover: #22c55e;
+  /* green-500 */
+
+  /* Cyber additions */
+  --shadow-subtle: 0 0 5px rgba(74, 222, 128, 0.1);
+  --shadow-hover: 0 0 15px rgba(74, 222, 128, 0.2);
 }
 
 body {
   font-family: 'Inter', sans-serif;
   background-color: var(--bg-body);
   color: var(--text-primary);
-  antialiased;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Typography */
@@ -76,7 +150,7 @@ h6 {
 .saas-input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.1);
 }
 
 /* Buttons */
@@ -188,4 +262,298 @@ h6 {
 ::-webkit-scrollbar-thumb {
   background-color: #D1D5DB;
   border-radius: 3px;
+}
+
+/* Initial Loading Screen - "The Holographic Prism" */
+#initial-loader {
+  position: fixed;
+  inset: 0;
+  background-color: #020617;
+  /* Slate 950 - Deepest Dark */
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s cubic-bezier(0.7, 0, 0.3, 1), visibility 0.8s;
+  overflow: hidden;
+  perspective: 1000px;
+
+  /* Default Theme Variables (Green) */
+  --loader-color: #4ade80;
+  --loader-glow: rgba(74, 222, 128, 0.6);
+  --loader-glow-weak: rgba(74, 222, 128, 0.15);
+  --loader-beam: #86efac;
+}
+
+/* Theme Overrides */
+body[data-theme="indigo"] #initial-loader {
+  --loader-color: #818cf8;
+  /* indigo-400 */
+  --loader-glow: rgba(129, 140, 248, 0.6);
+  --loader-glow-weak: rgba(129, 140, 248, 0.15);
+  --loader-beam: #a5b4fc;
+}
+
+body[data-theme="teal"] #initial-loader {
+  --loader-color: #2dd4bf;
+  /* teal-400 */
+  --loader-glow: rgba(45, 212, 191, 0.6);
+  --loader-glow-weak: rgba(45, 212, 191, 0.15);
+  --loader-beam: #5eead4;
+}
+
+body[data-theme="purple"] #initial-loader {
+  --loader-color: #c084fc;
+  /* purple-400 */
+  --loader-glow: rgba(192, 132, 252, 0.6);
+  --loader-glow-weak: rgba(192, 132, 252, 0.15);
+  --loader-beam: #d8b4fe;
+}
+
+
+/* Background Grid Effect */
+#initial-loader::before {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background-image:
+    linear-gradient(transparent 0%, var(--loader-glow-weak) 50%, transparent 100%),
+    linear-gradient(90deg, transparent 0%, var(--loader-glow-weak) 50%, transparent 100%);
+  background-size: 60px 60px;
+  transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+  animation: grid-move 20s linear infinite;
+  pointer-events: none;
+}
+
+/* Ambient Glow Spot */
+#initial-loader::after {
+  content: "";
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--loader-glow-weak) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: pulse-glow 4s ease-in-out infinite alternate;
+}
+
+.loader-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+/* Prism Container */
+.loader-prism-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+}
+
+/* The Glowing Prism */
+.loader-prism {
+  font-size: 4rem;
+  color: var(--loader-color);
+  filter: drop-shadow(0 0 20px var(--loader-glow));
+  animation: float-prism 3s ease-in-out infinite;
+  position: relative;
+  z-index: 2;
+}
+
+/* Scanning Beam */
+.loader-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--loader-beam);
+  box-shadow: 0 0 15px var(--loader-color), 0 0 30px var(--loader-color);
+  animation: scan-vertical 2.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  opacity: 0.8;
+  z-index: 3;
+}
+
+/* Rotating Rings */
+.loader-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--loader-glow-weak);
+  box-shadow: 0 0 10px var(--loader-glow-weak);
+}
+
+.ring-1 {
+  width: 160px;
+  height: 160px;
+  border-top-color: var(--loader-color);
+  border-bottom-color: transparent;
+  animation: spin-cw 4s linear infinite;
+}
+
+.ring-2 {
+  width: 130px;
+  height: 130px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  animation: spin-ccw 7s linear infinite;
+}
+
+.ring-3 {
+  width: 100px;
+  height: 100px;
+  border: 1px dotted rgba(255, 255, 255, 0.2);
+  animation: spin-cw 10s linear infinite;
+}
+
+/* Tech Text */
+.loader-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.loader-text {
+  font-family: 'Courier New', monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 15px var(--loader-glow);
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid var(--loader-color);
+  width: 0;
+  animation: typing 2.5s steps(20, end) forwards, blink-caret 0.75s step-end infinite;
+}
+
+.loader-subtext {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fade-in-up 0.5s ease-out 1.5s forwards;
+}
+
+/* Animations */
+@keyframes grid-move {
+  0% {
+    transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px);
+  }
+
+  100% {
+    transform: perspective(500px) rotateX(60deg) translateY(60px) translateZ(-200px);
+  }
+}
+
+@keyframes float-prism {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+    filter: drop-shadow(0 0 20px rgba(74, 222, 128, 0.5));
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(2deg);
+    filter: drop-shadow(0 0 35px rgba(74, 222, 128, 0.8));
+  }
+}
+
+@keyframes scan-vertical {
+  0% {
+    top: -20%;
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    top: 120%;
+    opacity: 0;
+  }
+}
+
+@keyframes spin-cw {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-ccw {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes typing {
+  from {
+    width: 0
+  }
+
+  to {
+    width: 100%
+  }
+}
+
+@keyframes blink-caret {
+
+  from,
+  to {
+    border-color: transparent
+  }
+
+  50% {
+    border-color: var(--loader-color)
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 0.7;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  100% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+.loader-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }

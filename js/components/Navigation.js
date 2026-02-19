@@ -19,7 +19,7 @@ export function renderNavigation(activePage = 'home') {
     <aside class="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 bg-white border-r border-slate-200 z-50 p-6">
         <!-- Logo -->
         <a href="dashboard.html" class="flex items-center gap-3 mb-10 px-2 transition-transform hover:scale-105">
-            <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+            <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-green-600 to-teal-600 flex items-center justify-center shadow-lg shadow-green-500/20">
                 <ion-icon name="bulb" class="text-white text-lg"></ion-icon>
             </div>
             <span class="font-bold text-xl tracking-tight text-slate-900">OpenConnect</span>
@@ -74,7 +74,7 @@ export function renderNavigation(activePage = 'home') {
     const mobileHeaderHTML = `
     <header class="md:hidden sticky top-0 bg-white/90 backdrop-blur-md border-b border-slate-200 z-40 px-4 h-14 flex items-center justify-between">
         <a href="dashboard.html" class="font-bold text-lg tracking-tight text-slate-900 flex items-center gap-2">
-            <div class="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
+            <div class="w-6 h-6 rounded-lg bg-gradient-to-br from-green-600 to-teal-600 flex items-center justify-center">
                 <ion-icon name="bulb" class="text-white text-xs"></ion-icon>
             </div>
             OpenConnect

@@ -5,12 +5,12 @@
 
 const PLATFORMS = [
     { name: 'GitHub', url: 'https://github.com', icon: 'logo-github', color: 'from-gray-700 to-gray-900', desc: 'Build & Showcase Code' },
-    { name: 'LinkedIn', url: 'https://linkedin.com', icon: 'logo-linkedin', color: 'from-blue-600 to-blue-800', desc: 'Professional Network' },
-    { name: 'Unstop', url: 'https://unstop.com', icon: 'trophy', color: 'from-blue-500 to-cyan-500', desc: 'Find Hackathons' },
-    { name: 'Devfolio', url: 'https://devfolio.co', icon: 'code-slash', color: 'from-indigo-500 to-purple-600', desc: 'Web3 Hackathons' },
-    { name: 'Kaggle', url: 'https://kaggle.com', icon: 'bar-chart', color: 'from-sky-400 to-blue-500', desc: 'Data Science' },
+    { name: 'LinkedIn', url: 'https://linkedin.com', icon: 'logo-linkedin', color: 'from-green-600 to-green-800', desc: 'Professional Network' },
+    { name: 'Unstop', url: 'https://unstop.com', icon: 'trophy', color: 'from-teal-500 to-emerald-500', desc: 'Find Hackathons' },
+    { name: 'Devfolio', url: 'https://devfolio.co', icon: 'code-slash', color: 'from-teal-500 to-emerald-600', desc: 'Web3 Hackathons' },
+    { name: 'Kaggle', url: 'https://kaggle.com', icon: 'bar-chart', color: 'from-sky-400 to-teal-500', desc: 'Data Science' },
     { name: 'LeetCode', url: 'https://leetcode.com', icon: 'terminal', color: 'from-yellow-500 to-orange-500', desc: 'Coding Practice' },
-    { name: 'Hashnode', url: 'https://hashnode.com', icon: 'document-text', color: 'from-blue-600 to-indigo-600', desc: 'Tech Blogging' }
+    { name: 'Hashnode', url: 'https://hashnode.com', icon: 'document-text', color: 'from-green-600 to-teal-600', desc: 'Tech Blogging' }
 ];
 
 function renderPlatformGrid(containerId) {

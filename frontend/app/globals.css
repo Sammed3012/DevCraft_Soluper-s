@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@theme {
+    --font-inter: 'Inter', sans-serif;
+
+    /* Custom Colors from your design system */
+    --color-primary: #2563EB;
+    --color-primary-hover: #1D4ED8;
+    --color-success: #10B981;
+    --color-warning: #F59E0B;
+    --color-danger: #EF4444;
+
+    --color-bg-body: #F9FAFB;
+    --color-bg-card: #FFFFFF;
+
+    --color-text-primary: #111827;
+    --color-text-secondary: #6B7280;
+    --color-text-tertiary: #9CA3AF;
+
+    --color-border-light: #E5E7EB;
+    --color-border-hover: #D1D5DB;
+
+    --radius-card: 12px;
+    --radius-btn: 6px;
+
+    --animate-fade-in: fadeIn 0.4s ease-out forwards;
+    --animate-fade-in--down: fadeIn 0.3s ease-out forwards;
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+/* Custom Utilities using @apply */
+@utility saas-card {
+    @apply bg-white border border-border-light rounded-[var(--radius-card)] shadow-xs transition-all duration-200 hover:border-border-hover hover:shadow-md;
+}
+
+@utility saas-input {
+    @apply w-full rounded-[var(--radius-btn)] border border-border-light bg-white px-3 py-2.5 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/10;
+}
+
+@utility btn-primary {
+    @apply rounded-[var(--radius-btn)] bg-primary px-4 py-2 text-sm font-semibold text-white shadow-md shadow-blue-200 transition-all hover:bg-primary-hover hover:shadow-blue-300 active:scale-95;
+}
+
+@utility btn-secondary {
+    @apply rounded-[var(--radius-btn)] border border-border-light bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-xs transition-all hover:bg-slate-50 hover:border-border-hover hover:text-slate-900 active:scale-95;
+}
+
+/* Status Badges */
+@utility badge {
+    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium;
+}
+
+@utility badge-success {
+    @apply border-emerald-200 bg-emerald-50 text-emerald-700;
+}
+
+@utility badge-warning {
+    @apply border-amber-200 bg-amber-50 text-amber-700;
+}
+
+@utility badge-danger {
+    @apply border-red-200 bg-red-50 text-red-700;
+}
+
+/* Skill Tag */
+@utility skill-tag {
+    @apply inline-flex items-center rounded px-2 py-1 text-xs font-medium text-slate-600 bg-slate-100 border border-slate-200;
+}
+
+/* Base Styles */
+body {
+    font-family: var(--font-inter);
+    background-color: var(--color-bg-body);
+    color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+}

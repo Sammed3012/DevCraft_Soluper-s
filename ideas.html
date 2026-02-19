@@ -9,69 +9,124 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .category-scroll::-webkit-scrollbar {
+            height: 0px;
+        }
+
+        .category-scroll {
+            scrollbar-width: none;
+        }
+    </style>
 </head>
 
-<body class="bg-gray-50 text-slate-900">
+<body class="bg-gray-50 text-slate-900 font-sans antialiased">
+    <!-- Main Content Area (Injected via Layout) -->
+    <div id="explore-content" class="animate-enter pb-16">
 
-    <!-- Navigation (Injected) -->
+        <!-- Hero Section -->
+        <div class="relative bg-slate-900 text-white rounded-3xl overflow-hidden mb-10 shadow-xl mx-4 md:mx-0">
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent z-10"></div>
+            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+                class="absolute inset-0 w-full h-full object-cover opacity-50">
 
-    <main class="min-h-screen">
-        <div class="max-w-7xl mx-auto px-4 md:px-8 py-8">
-
-            <!-- Search & Filters -->
-            <div
-                class="mb-8 flex flex-col md:flex-row gap-4 justify-between items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm sticky top-20 z-30">
-                <div class="relative w-full md:w-96">
-                    <ion-icon name="search-outline" class="absolute left-3 top-3 text-slate-400 text-lg"></ion-icon>
-                    <input type="text" id="search-input" placeholder="Search ideas, skills, people..."
-                        class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm">
-                </div>
-
-                <div class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 hide-scrollbar">
+            <div class="relative z-20 p-8 md:p-12 max-w-2xl">
+                <span
+                    class="inline-block px-3 py-1 bg-green-500/20 text-green-400 text-xs font-bold uppercase tracking-wider rounded-full mb-4 border border-green-500/30 backdrop-blur-sm">Featured
+                    Project</span>
+                <h1 class="text-3xl md:text-4xl font-bold mb-4 leading-tight">Project EcoSphere: AI for Sustainable
+                    Farming</h1>
+                <p class="text-slate-300 mb-6 text-sm md:text-base leading-relaxed">Join a global team of developers and
+                    agronomists building the future of food security using satellite data and machine learning.</p>
+                <div class="flex gap-4">
                     <button
-                        class="px-4 py-2 bg-slate-900 text-white rounded-full text-sm font-medium whitespace-nowrap shadow-md hover:bg-slate-800 transition-colors">All</button>
+                        class="px-6 py-3 bg-white text-slate-900 rounded-xl font-bold text-sm hover:bg-slate-100 transition-colors shadow-lg">View
+                        Project</button>
                     <button
-                        class="px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-full text-sm font-medium whitespace-nowrap hover:bg-slate-50 transition-colors">Tech</button>
-                    <button
-                        class="px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-full text-sm font-medium whitespace-nowrap hover:bg-slate-50 transition-colors">Art</button>
-                    <button
-                        class="px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-full text-sm font-medium whitespace-nowrap hover:bg-slate-50 transition-colors">Business</button>
-                    <button
-                        class="px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-full text-sm font-medium whitespace-nowrap hover:bg-slate-50 transition-colors">Social</button>
+                        class="px-6 py-3 bg-slate-800 text-white border border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-700 transition-colors">Save
+                        for Later</button>
                 </div>
             </div>
-
-            <!-- Grid Content -->
-            <div id="ideas-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-24">
-                <!-- Loaded via JS -->
-                <div class="col-span-full text-center py-20">
-                    <div
-                        class="animate-spin inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mb-4">
-                    </div>
-                    <p class="text-slate-500">Discovering ideas...</p>
-                </div>
-            </div>
-
         </div>
-    </main>
+
+        <!-- Filters & Search Bar -->
+        <div class="sticky top-0 z-20 bg-gray-50/95 backdrop-blur-sm py-4 mb-4 border-b border-transparent transition-all"
+            id="filter-bar">
+            <div class="flex flex-col md:flex-row gap-4 justify-between items-center px-2">
+                <!-- Search -->
+                <div class="relative w-full md:w-96 group">
+                    <div
+                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors group-focus-within:text-green-500 text-slate-400">
+                        <ion-icon name="search-outline" class="text-xl"></ion-icon>
+                    </div>
+                    <input type="text" id="search-input" placeholder="Search projects, skills, or founders..."
+                        class="block w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl leading-5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all shadow-sm text-sm">
+                </div>
+
+                <!-- Sort & Filter Buttons -->
+                <div class="flex items-center gap-3 w-full md:w-auto overflow-x-auto category-scroll pb-1 md:pb-0">
+                    <button
+                        class="flex items-center gap-2 px-4 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-medium shadow-md transition-transform hover:scale-105 active:scale-95 whitespace-nowrap">
+                        <ion-icon name="grid-outline"></ion-icon> All
+                    </button>
+                    <button
+                        class="flex items-center gap-2 px-4 py-2.5 bg-white text-slate-600 border border-slate-200 rounded-xl text-sm font-medium hover:bg-slate-50 hover:border-slate-300 transition-all whitespace-nowrap">
+                        <ion-icon name="code-slash-outline"></ion-icon> Tech
+                    </button>
+                    <button
+                        class="flex items-center gap-2 px-4 py-2.5 bg-white text-slate-600 border border-slate-200 rounded-xl text-sm font-medium hover:bg-slate-50 hover:border-slate-300 transition-all whitespace-nowrap">
+                        <ion-icon name="leaf-outline"></ion-icon> Social
+                    </button>
+                    <button
+                        class="flex items-center gap-2 px-4 py-2.5 bg-white text-slate-600 border border-slate-200 rounded-xl text-sm font-medium hover:bg-slate-50 hover:border-slate-300 transition-all whitespace-nowrap">
+                        <ion-icon name="brush-outline"></ion-icon> Design
+                    </button>
+                    <div class="h-6 w-px bg-slate-300 mx-1"></div>
+                    <select
+                        class="px-4 py-2.5 bg-white text-slate-600 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-green-500 cursor-pointer hover:bg-slate-50">
+                        <option>Newest First</option>
+                        <option>Most Popular</option>
+                        <option>Trending</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ideas Grid -->
+        <div id="ideas-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Skeletons (Initial state) -->
+        </div>
+
+        <!-- Load More -->
+        <div class="mt-12 text-center">
+            <button
+                class="px-8 py-3 bg-white border border-slate-200 text-slate-600 font-bold text-sm rounded-full shadow-sm hover:bg-slate-50 hover:text-slate-900 transition-all hover:shadow-md transform active:scale-95 group">
+                <span class="group-hover:hidden">Load More Projects</span>
+                <span class="hidden group-hover:inline-block">Discover More</span>
+            </button>
+        </div>
+    </div>
 
     <script src="js/config.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/auth.js"></script>
 
-    <!-- Render Logic -->
     <script type="module">
-        import { renderNavigation, loadSidebarUser } from './js/components/Navigation.js';
-        import { renderIdeaCard } from './js/components/IdeaCard.js';
+        import { Layout } from './js/components/Layout.js';
 
-        // 1. Navigation
-        renderNavigation('explore');
-        loadSidebarUser();
+        // 1. Initialize Layout
+        new Layout('ideas');
 
-        // 2. Fetch Data
-        document.addEventListener('DOMContentLoaded', async () => {
+        // 2. Data Fetching
+        const initIdeas = async () => {
             const grid = document.getElementById('ideas-grid');
+            if (!grid) { console.error('Grid not found'); return; }
+
+            const searchInput = document.getElementById('search-input');
             const { data: { user } } = await supabase.auth.getUser();
+
+            // Simulate Network Delay for Skeleton Effect (UX Polish)
+            await new Promise(r => setTimeout(r, 800));
 
             const { data: ideas, error } = await supabase
                 .from('ideas')
@@ -79,28 +134,124 @@
                 .order('created_at', { ascending: false });
 
             if (error) {
-                grid.innerHTML = '<p class="col-span-full text-center text-red-500">Failed to load content.</p>';
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 flex flex-col items-center justify-center text-center">
+                        <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-4 text-red-500 text-2xl">
+                             <ion-icon name="alert-circle-outline"></ion-icon>
+                        </div>
+                        <h3 class="text-slate-900 font-bold mb-1">Failed to load ideas</h3>
+                        <p class="text-slate-500 text-sm">Please try again later.</p>
+                    </div>`;
                 return;
             }
 
             if (ideas.length === 0) {
-                grid.innerHTML = '<p class="col-span-full text-center text-slate-500">No ideas found.</p>';
+                grid.innerHTML = `
+                    <div class="col-span-full py-20 flex flex-col items-center justify-center text-center">
+                        <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-300 text-4xl border border-slate-100">
+                             <ion-icon name="telescope-outline"></ion-icon>
+                        </div>
+                        <h3 class="text-slate-900 font-bold mb-1">No ideas yet</h3>
+                        <p class="text-slate-500 text-sm mb-6 max-w-md mx-auto">Be the first to share your innovative project with the community.</p>
+                        <a href="create-idea.html" class="px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-colors shadow-lg">Start a Project</a>
+                    </div>`;
                 return;
             }
 
-            // Render Grid
-            grid.innerHTML = ideas.map(idea => renderIdeaCard(idea, user)).join('');
+            // Render
+            renderIdeas(grid, ideas);
 
-            // Search Listener
-            const searchInput = document.getElementById('search-input');
-            searchInput.addEventListener('input', (e) => {
-                const term = e.target.value.toLowerCase();
-                const filtered = ideas.filter(i => i.title.toLowerCase().includes(term) || i.description.toLowerCase().includes(term));
-                grid.innerHTML = filtered.length > 0
-                    ? filtered.map(idea => renderIdeaCard(idea, user)).join('')
-                    : '<p class="col-span-full text-center text-slate-500 py-10">No matches found.</p>';
-            });
+            // Search
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const term = e.target.value.toLowerCase();
+                    const filtered = ideas.filter(i => i.title.toLowerCase().includes(term) ||
+                        i.description.toLowerCase().includes(term));
+                    if (filtered.length > 0) {
+                        renderIdeas(grid, filtered);
+                    } else {
+                        grid.innerHTML = `
+                         <div class="col-span-full py-12 text-center text-slate-400">
+                            <p>No matches found for "${e.target.value}"</p>
+                        </div>`;
+                    }
+                });
+            }
+        };
+
+        function renderIdeas(container, ideas) {
+            container.innerHTML = ideas.map(idea => `
+                <a href="idea-details.html?id=${idea.id}&from=ideas" class="block bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer flex flex-col h-full decoration-0">
+                    
+                    <!-- Image -->
+                    <div class="relative h-48 bg-slate-100 overflow-hidden">
+                        ${idea.image_url
+                    ? `<img src="${idea.image_url}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">`
+                    : `<div class="w-full h-full flex flex-col items-center justify-center text-slate-300">
+                                  <ion-icon name="image-outline" class="text-4xl mb-2"></ion-icon>
+                               </div>`
+                }
+                        
+                        <!-- Overlay Tag (Category) -->
+                        <div class="absolute top-3 left-3">
+                             <span class="px-2 py-1 bg-white/90 backdrop-blur text-slate-900 text-[10px] font-bold uppercase tracking-wider rounded-md shadow-sm border border-white/20">
+                                ${idea.category || 'Technology'}
+                             </span>
+                        </div>
+
+                         <!-- Like Action (Hover) - Prevent default -->
+                        <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300">
+                             <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 shadow-md transition-colors" onclick="event.preventDefault(); event.stopPropagation()">
+                                <ion-icon name="heart"></ion-icon>
+                             </button>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="p-5 flex-1 flex flex-col">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-lg text-slate-900 leading-snug group-hover:text-green-600 transition-colors line-clamp-1">${idea.title}</h3>
+                        </div>
+                        
+                        <p class="text-sm text-slate-500 line-clamp-2 mb-4 leading-relaxed flex-1">${idea.description}</p>
+                        
+                        <!-- Tags -->
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${(idea.tags || ['General']).slice(0, 3).map(tag =>
+                    `<span class="px-2 py-1 bg-slate-50 border border-slate-100 text-[10px] font-medium text-slate-500 rounded-md">#${tag}</span>`
+                ).join('')}
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="pt-4 border-t border-slate-50 flex items-center justify-between mt-auto">
+                            <div class="flex items-center gap-2">
+                                <img src="${idea.profiles?.avatar_url || `https://ui-avatars.com/api/?name=${idea.profiles?.full_name}`}" class="w-6 h-6 rounded-full border border-slate-100 object-cover">
+                                <span class="text-xs font-bold text-slate-600 truncate max-w-[100px]">${idea.profiles?.full_name || 'Anonymous'}</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-xs text-slate-400 font-medium">
+                                <span class="flex items-center gap-1"><ion-icon name="heart"></ion-icon> ${idea.upvotes_count || 0}</span>
+                                <span class="flex items-center gap-1"><ion-icon name="chatbubble"></ion-icon> 0</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        // Init
+        initIdeas();
+
+        window.addEventListener('scroll', () => {
+            const bar = document.getElementById('filter-bar');
+            if (window.scrollY > 50) {
+                bar.classList.add('shadow-md', 'bg-white/95');
+                bar.classList.remove('bg-gray-50/95');
+            } else {
+                bar.classList.remove('shadow-md', 'bg-white/95');
+                bar.classList.add('bg-gray-50/95');
+            }
         });
+
     </script>
 </body>
 

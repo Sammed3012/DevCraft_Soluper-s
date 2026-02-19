@@ -10,7 +10,7 @@ export function renderIdeaCard(idea, currentUser = null) {
 
     // Skills formatting
     const skills = idea.required_skills && idea.required_skills.length > 0
-        ? idea.required_skills.slice(0, 3).map(s => `<span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase shadow-sm border border-blue-100">${s}</span>`).join('')
+        ? idea.required_skills.slice(0, 3).map(s => `<span class="bg-green-50 text-green-600 px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase shadow-sm border border-green-100">${s}</span>`).join('')
         : '';
 
     // Convert timestamp
@@ -40,7 +40,7 @@ export function renderIdeaCard(idea, currentUser = null) {
                     <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
                 </a>
                 <div class="leading-tight">
-                    <a href="profile.html?id=${idea.user_id}" class="font-bold text-sm text-slate-900 hover:text-blue-600 transition-colors">${authorName}</a>
+                    <a href="profile.html?id=${idea.user_id}" class="font-bold text-sm text-slate-900 hover:text-green-600 transition-colors">${authorName}</a>
                     <p class="text-[10px] text-slate-500 font-medium">${idea.category || 'General'} • ${timeAgo(idea.created_at)}</p>
                 </div>
             </div>
@@ -65,7 +65,7 @@ export function renderIdeaCard(idea, currentUser = null) {
                     <button class="group flex items-center gap-1.5 transition-colors text-slate-600 hover:text-red-500" onclick="handleFeedUpvote('${idea.id}', this)">
                         <ion-icon name="heart-outline" class="text-2xl transition-transform active:scale-75 group-hover:scale-110"></ion-icon>
                     </button>
-                    <button class="group flex items-center gap-1.5 transition-colors text-slate-600 hover:text-blue-500" onclick="window.location.href='idea-details.html?id=${idea.id}#comments'">
+                    <button class="group flex items-center gap-1.5 transition-colors text-slate-600 hover:text-green-500" onclick="window.location.href='idea-details.html?id=${idea.id}#comments'">
                         <ion-icon name="chatbubble-outline" class="text-2xl transition-transform active:scale-75 group-hover:scale-110"></ion-icon>
                     </button>
                     <button class="group flex items-center gap-1.5 transition-colors text-slate-600 hover:text-green-500" onclick="navigator.share({title: '${idea.title}', url: window.location.href})">
@@ -84,7 +84,7 @@ export function renderIdeaCard(idea, currentUser = null) {
 
             <!-- Title & Description -->
             <div class="mb-3">
-                <h3 class="font-bold text-lg text-slate-900 leading-tight mb-1 hover:text-blue-600 cursor-pointer" onclick="window.location.href='idea-details.html?id=${idea.id}'">
+                <h3 class="font-bold text-lg text-slate-900 leading-tight mb-1 hover:text-green-600 cursor-pointer" onclick="window.location.href='idea-details.html?id=${idea.id}'">
                     ${idea.title}
                 </h3>
                 <p class="text-sm text-slate-600 leading-relaxed line-clamp-3">
@@ -95,14 +95,14 @@ export function renderIdeaCard(idea, currentUser = null) {
             <!-- Skills/Tags -->
             <div class="flex flex-wrap gap-2 mb-4">
                 ${skills}
-                ${idea.tags ? idea.tags.slice(0, 2).map(t => `<span class="text-xs text-slate-400 hover:text-blue-500 cursor-pointer">#${t}</span>`).join(' ') : ''}
+                ${idea.tags ? idea.tags.slice(0, 2).map(t => `<span class="text-xs text-slate-400 hover:text-green-500 cursor-pointer">#${t}</span>`).join(' ') : ''}
             </div>
 
             <!-- Comment Input (Fake) -->
             <div class="flex items-center gap-3 pt-3 border-t border-gray-100">
                 <img src="${currentUser?.user_metadata?.avatar_url || 'https://ui-avatars.com/api/?name=Me'}" class="w-6 h-6 rounded-full border border-slate-200">
                 <input type="text" placeholder="Add a comment..." class="bg-transparent text-sm w-full focus:outline-none placeholder-slate-400 text-slate-700">
-                <button class="text-blue-500 text-xs font-bold uppercase disabled:opacity-50 hover:text-blue-700 transition-colors">Post</button>
+                <button class="text-green-500 text-xs font-bold uppercase disabled:opacity-50 hover:text-green-700 transition-colors">Post</button>
             </div>
             
         </div>

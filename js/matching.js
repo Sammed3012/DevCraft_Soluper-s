@@ -7,7 +7,7 @@ window.loadMatches = async function (ideaId) {
     // Loading State
     container.innerHTML = `
         <div class="flex flex-col items-center justify-center w-full py-8 text-slate-400 animate-pulse">
-            <div class="w-8 h-8 rounded-full border-2 border-slate-300 border-t-blue-500 animate-spin mb-2"></div>
+            <div class="w-8 h-8 rounded-full border-2 border-slate-300 border-t-green-500 animate-spin mb-2"></div>
             <span class="text-xs font-medium">Analyzing compatibility...</span>
         </div>
     `;
@@ -50,7 +50,7 @@ window.loadMatches = async function (ideaId) {
             let color = 'text-green-500';
             let msg = 'Perfect Match';
 
-            if (score < 80) { color = 'text-blue-500'; msg = 'Great Match'; }
+            if (score < 80) { color = 'text-teal-500'; msg = 'Great Match'; }
             if (score < 60) { color = 'text-yellow-500'; msg = 'Potential'; }
 
             // SVG Circle Logic

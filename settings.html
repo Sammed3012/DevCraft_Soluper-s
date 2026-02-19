@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - OpenConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .settings-tab-active {
+            background-color: #f0fdf4;
+            /* green-50 */
+            color: #15803d;
+            /* green-700 */
+            border-color: #dcfce7;
+            /* green-100 */
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-slate-900 font-sans antialiased">
+    <!-- Navbar injected via Layout -->
+
+    <div id="settings-content" class="max-w-6xl mx-auto px-4 py-8 space-y-8 animate-enter">
+
+        <!-- Header -->
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Settings</h1>
+            <p class="text-slate-500 mt-1">Manage your profile, preferences, and security settings.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar Navigation -->
+            <div class="lg:col-span-1 space-y-2">
+                <nav class="sticky top-24 space-y-1">
+                    <button onclick="switchTab('general')" id="tab-general"
+                        class="w-full text-left px-4 py-3 rounded-xl font-semibold text-slate-600 hover:bg-white transition-all flex items-center gap-3 settings-tab-active border border-transparent">
+                        <ion-icon name="person-circle-outline" class="text-xl"></ion-icon>
+                        <span>General Profile</span>
+                    </button>
+                    <button onclick="switchTab('security')" id="tab-security"
+                        class="w-full text-left px-4 py-3 rounded-xl font-medium text-slate-500 hover:bg-white hover:text-slate-700 transition-all flex items-center gap-3 border border-transparent">
+                        <ion-icon name="shield-checkmark-outline" class="text-xl"></ion-icon>
+                        <span>Login & Security</span>
+                    </button>
+                    <button onclick="switchTab('notifications')" id="tab-notifications"
+                        class="w-full text-left px-4 py-3 rounded-xl font-medium text-slate-500 hover:bg-white hover:text-slate-700 transition-all flex items-center gap-3 border border-transparent">
+                        <ion-icon name="notifications-outline" class="text-xl"></ion-icon>
+                        <span>Notifications</span>
+                    </button>
+                    <button onclick="switchTab('integrations')" id="tab-integrations"
+                        class="w-full text-left px-4 py-3 rounded-xl font-medium text-slate-500 hover:bg-white hover:text-slate-700 transition-all flex items-center gap-3 border border-transparent">
+                        <ion-icon name="grid-outline" class="text-xl"></ion-icon>
+                        <span>Integrations</span>
+                    </button>
+                    <button onclick="switchTab('billing')" id="tab-billing"
+                        class="w-full text-left px-4 py-3 rounded-xl font-medium text-slate-500 hover:bg-white hover:text-slate-700 transition-all flex items-center gap-3 border border-transparent">
+                        <ion-icon name="card-outline" class="text-xl"></ion-icon>
+                        <span>Billing & Plans</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="lg:col-span-3 space-y-6">
+
+                <!-- Feedback Toast (Hidden) -->
+                <div id="settings-toast"
+                    class="hidden fixed bottom-6 right-6 bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 z-50 animate-bounce-in">
+                    <ion-icon name="checkmark-circle" class="text-green-400 text-xl"></ion-icon>
+                    <span class="font-medium">Settings saved successfully</span>
+                </div>
+
+                <!-- 1. General Profile Section -->
+                <section id="content-general" class="space-y-6">
+                    <!-- Avatar Card -->
+                    <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+                        <div class="flex items-center gap-6">
+                            <div class="relative group">
+                                <img id="settings-avatar" src="https://ui-avatars.com/api/?name=User"
+                                    class="w-24 h-24 rounded-full border-4 border-slate-50 shadow-md object-cover">
+                                <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                                    onclick="document.getElementById('avatar-input').click()">
+                                    <ion-icon name="camera" class="text-white text-2xl"></ion-icon>
+                                </div>
+                                <input type="file" id="avatar-input" class="hidden" accept="image/*">
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-900">Profile Photo</h3>
+                                <p class="text-sm text-slate-500 mb-3">Accepts JPG, PNG or GIF (max. 2MB)</p>
+                                <div class="flex gap-3">
+                                    <button onclick="document.getElementById('avatar-input').click()"
+                                        class="px-4 py-2 bg-slate-100 text-slate-700 font-bold text-xs rounded-lg hover:bg-slate-200 transition-colors">Upload
+                                        New</button>
+                                    <button
+                                        class="px-4 py-2 text-red-500 font-bold text-xs rounded-lg hover:bg-red-50 transition-colors">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Personal Info -->
+                    <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+                        <h2 class="text-lg font-bold text-slate-900 mb-6">Personal Information</h2>
+                        <form onsubmit="event.preventDefault(); saveSettings();" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label
+                                        class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Display
+                                        Name</label>
+                                    <input type="text" id="settings-name"
+                                        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 font-semibold focus:ring-2 focus:ring-green-500 focus:bg-white transition-all outline-none"
+                                        placeholder="Your Name">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Role
+                                        / Title</label>
+                                    <input type="text" id="settings-role"
+                                        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 font-semibold focus:ring-2 focus:ring-green-500 focus:bg-white transition-all outline-none"
+                                        placeholder="e.g. Full Stack Developer">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label
+                                    class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Bio</label>
+                                <textarea id="settings-bio" rows="4"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:ring-2 focus:ring-green-500 focus:bg-white transition-all outline-none leading-relaxed"
+                                    placeholder="Tell the community about yourself..."></textarea>
+                                <p class="text-right text-xs text-slate-400 mt-1">0/240 characters</p>
+                            </div>
+
+                            <div class="h-px bg-slate-100 my-6"></div>
+
+                            <div class="flex justify-end">
+                                <button type="submit"
+                                    class="px-6 py-3 bg-slate-900 text-white font-bold rounded-xl shadow-lg hover:bg-slate-800 transform hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                                    <span>Save Changes</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- 2. Security Section -->
+                <section id="content-security" class="space-y-6 hidden">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+                        <h2 class="text-lg font-bold text-slate-900 mb-6">Login Details</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label
+                                    class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Email
+                                    Address</label>
+                                <div class="flex gap-4">
+                                    <input type="email" id="settings-email" disabled
+                                        class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-500 font-medium cursor-not-allowed">
+                                    <span
+                                        class="flex items-center gap-1 text-green-600 font-bold text-xs bg-green-50 px-3 rounded-lg border border-green-100"><ion-icon
+                                            name="checkmark-circle"></ion-icon> Verified</span>
+                                </div>
+                            </div>
+
+                            <div class="h-px bg-slate-100 my-6"></div>
+
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-900 mb-4">Password</h3>
+                                <button
+                                    class="px-4 py-2 border border-slate-200 rounded-xl font-bold text-slate-700 hover:bg-slate-50 transition-colors">Change
+                                    Password</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <h2 class="text-lg font-bold text-slate-900 mb-1">Two-Factor Authentication</h2>
+                                <p class="text-sm text-slate-500 leading-relaxed max-w-lg">Add an extra layer of
+                                    security to your account by requiring a code when logging in.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer mt-1">
+                                <input type="checkbox" value="" class="sr-only peer">
+                                <div
+                                    class="w-12 h-7 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-green-600">
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. Notifications Section -->
+                <section id="content-notifications" class="space-y-6 hidden">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+                        <h2 class="text-lg font-bold text-slate-900 mb-6">Email Notifications</h2>
+
+                        <div class="space-y-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-bold text-slate-900">Project Updates</p>
+                                    <p class="text-sm text-slate-500">Get notified when someone comments or joins your
+                                        project.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" value="" class="sr-only peer" checked>
+                                    <div
+                                        class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600">
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-bold text-slate-900">New Mentions</p>
+                                    <p class="text-sm text-slate-500">Get notified when you are mentioned in a
+                                        discussion.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" value="" class="sr-only peer" checked>
+                                    <div
+                                        class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600">
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-bold text-slate-900">Smart Recommendations</p>
+                                    <p class="text-sm text-slate-500">Receive weekly AI-curated project matches.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" value="" class="sr-only peer">
+                                    <div
+                                        class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600">
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. Integrations Section -->
+                <section id="content-integrations" class="space-y-6 hidden">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+                        <h2 class="text-lg font-bold text-slate-900 mb-6">Connected Apps</h2>
+
+                        <div class="space-y-4">
+                            <!-- GitHub -->
+                            <div
+                                class="flex items-center justify-between p-4 border border-slate-100 rounded-xl bg-slate-50">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-10 h-10 bg-black text-white rounded-lg flex items-center justify-center text-2xl">
+                                        <ion-icon name="logo-github"></ion-icon>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-slate-900">GitHub</p>
+                                        <p class="text-xs text-slate-500">Connect repositories and show contributions.
+                                        </p>
+                                    </div>
+                                </div>
+                                <button
+                                    class="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg shadow-sm hover:bg-slate-50">Connect</button>
+                            </div>
+
+                            <!-- LinkedIn -->
+                            <div
+                                class="flex items-center justify-between p-4 border border-slate-100 rounded-xl bg-slate-50">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-10 h-10 bg-[#0077b5] text-white rounded-lg flex items-center justify-center text-2xl">
+                                        <ion-icon name="logo-linkedin"></ion-icon>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-slate-900">LinkedIn</p>
+                                        <p class="text-xs text-slate-500">Import professional history.</p>
+                                    </div>
+                                </div>
+                                <button
+                                    class="px-3 py-1.5 bg-green-50 border border-green-200 text-green-700 text-xs font-bold rounded-lg shadow-sm flex items-center gap-1">
+                                    <ion-icon name="checkmark"></ion-icon> Connected
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. Billing Section (Placeholder) -->
+                <section id="content-billing" class="space-y-6 hidden">
+                    <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-8 shadow-lg text-white">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h2 class="text-xl font-bold mb-2">Free Plan</h2>
+                                <p class="text-slate-400 text-sm mb-6">You are currently on the free tier.</p>
+                                <button
+                                    class="px-5 py-2.5 bg-green-500 hover:bg-green-400 text-white font-bold rounded-xl transition-colors shadow-lg shadow-green-500/30">
+                                    Upgrade to Pro
+                                </button>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold">$0<span
+                                        class="text-lg text-slate-400 font-normal">/mo</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+
+    <script type="module">
+        import { Layout } from './js/components/Layout.js';
+
+        // 1. Render Layout
+        new Layout('settings');
+
+        // 2. Settings Logic (Tab Switching & Data Loading)
+        const tabs = ['general', 'security', 'notifications', 'integrations', 'billing'];
+
+        window.switchTab = (tabName) => {
+            tabs.forEach(t => {
+                // Toggle Button State
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tabName) {
+                    btn.classList.add('settings-tab-active');
+                    btn.classList.add('bg-green-50'); // fallback/extra
+                    btn.querySelector('ion-icon').classList.add('text-green-700');
+                    btn.classList.remove('text-slate-500', 'hover:bg-white');
+                } else {
+                    btn.classList.remove('settings-tab-active', 'bg-green-50');
+                    btn.querySelector('ion-icon').classList.remove('text-green-700');
+                    btn.classList.add('text-slate-500', 'hover:bg-white');
+                }
+
+                // Toggle Content
+                const content = document.getElementById(`content-${t}`);
+                if (content) {
+                    if (t === tabName) content.classList.remove('hidden');
+                    else content.classList.add('hidden');
+                }
+            });
+        };
+
+        window.saveSettings = async () => {
+            // Mock Save
+            const btn = document.querySelector('button[type="submit"]');
+            const original = btn.innerHTML;
+            btn.innerHTML = '<ion-icon name="sync" class="animate-spin text-lg"></ion-icon> Saving...';
+            btn.disabled = true;
+
+            // Simulate API call
+            await new Promise(r => setTimeout(r, 800));
+
+            // Show Toast
+            const toast = document.getElementById('settings-toast');
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+
+            btn.innerHTML = original;
+            btn.disabled = false;
+        };
+
+        // Initialize User Data
+        async function loadSettingsData() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                document.getElementById('settings-email').value = user.email;
+                document.getElementById('settings-avatar').src = user.user_metadata.avatar_url || `https://ui-avatars.com/api/?name=${user.email}`;
+
+                // Get extended profile
+                const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+                if (profile) {
+                    document.getElementById('settings-name').value = profile.full_name || '';
+                    document.getElementById('settings-bio').value = profile.bio || '';
+                    // role not in schema? assume bio or separate field. Using bio for now.
+                }
+            }
+        }
+
+        loadSettingsData();
+    </script>
+</body>
+
+</html>

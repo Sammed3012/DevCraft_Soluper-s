@@ -123,7 +123,7 @@ async function loadTrendingIdeas() {
         container.innerHTML = `
             <div class="glass p-8 text-center">
                 <p class="text-slate-400">No ideas yet. be the first to post!</p>
-                <a href="create-idea.html" class="inline-block mt-4 px-6 py-2 bg-blue-600 rounded-full text-white text-sm">Post Idea</a>
+                <a href="create-idea.html" class="inline-block mt-4 px-6 py-2 bg-green-600 rounded-full text-white text-sm">Post Idea</a>
             </div>
         `;
         return;
@@ -135,7 +135,7 @@ async function loadTrendingIdeas() {
                 <div class="flex gap-4">
                     <img src="${idea.profiles?.avatar_url || 'https://ui-avatars.com/api/?name=User'}" class="w-10 h-10 rounded-full border border-slate-600 object-cover" alt="Author">
                     <div>
-                        <h3 class="font-bold text-lg text-white group-hover:text-blue-400 transition-colors">
+                        <h3 class="font-bold text-lg text-white group-hover:text-green-400 transition-colors">
                             <a href="idea-details.html?id=${idea.id}">${idea.title}</a>
                         </h3>
                         <p class="text-xs text-slate-400 mb-2">by ${idea.profiles?.full_name || 'Unknown'} • ${timeAgo(idea.created_at)}</p>
@@ -149,7 +149,7 @@ async function loadTrendingIdeas() {
                 </div>
                 
                 <div class="flex flex-col items-center gap-1 min-w-[50px]">
-                    <button class="text-slate-400 hover:text-blue-500 transition-colors">
+                    <button class="text-slate-400 hover:text-green-500 transition-colors">
                         <ion-icon name="caret-up-outline" class="text-2xl"></ion-icon>
                     </button>
                     <span class="font-bold text-lg text-white">${idea.upvotes_count}</span>

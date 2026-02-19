@@ -8,17 +8,65 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            50: 'var(--bg-card-secondary)', /* Was slate-50 */
+                            100: 'var(--border-light)', /* Was slate-100 */
+                            200: 'var(--border-hover)', /* Was slate-200 */
+                            500: 'var(--text-secondary)', /* Was slate-500 */
+                            600: 'var(--text-secondary-dark)',
+                            800: 'var(--bg-card-dark)',
+                            900: 'var(--text-primary)', /* Was slate-900 */
+                        },
+                        gray: {
+                            50: 'var(--bg-body)', /* Was gray-50 */
+                            200: 'var(--border-light)',
+                        },
+                        white: 'var(--bg-card)',
+                        blue: {
+                            600: 'var(--primary)',
+                            700: 'var(--primary-hover)',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="bg-gray-50 text-slate-900 font-sans antialiased">
+
+    <!-- Initial Loader - Holographic Prism -->
+    <div id="initial-loader">
+        <div class="loader-content">
+            <div class="loader-prism-wrapper">
+                <div class="loader-ring ring-1"></div>
+                <div class="loader-ring ring-2"></div>
+                <div class="loader-ring ring-3"></div>
+                <div class="loader-beam"></div>
+                <div class="loader-prism">
+                    <ion-icon name="prism"></ion-icon>
+                </div>
+            </div>
+            <div class="loader-text-wrapper">
+                <div class="loader-text">OPENCONNECT_SYSTEMS</div>
+                <div class="loader-subtext">INITIALIZING V2 ENGINE...</div>
+            </div>
+        </div>
+    </div>
 
     <!-- Navbar -->
     <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <div
-                    class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white text-lg font-bold shadow-sm">
+                    class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white text-lg font-bold shadow-sm">
                     <ion-icon name="prism"></ion-icon>
                 </div>
                 <span class="text-xl font-bold tracking-tight text-slate-900">OpenConnect</span>
@@ -38,22 +86,49 @@
                     Sign Up
                 </a>
             </div>
+
+            <!-- Theme Switcher -->
+            <div class="relative ml-4">
+                <button id="theme-toggle"
+                    class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition-all focus:outline-none">
+                    <ion-icon name="sunny" class="text-xl theme-icon-light"></ion-icon>
+                    <ion-icon name="moon" class="text-xl theme-icon-dark hidden"></ion-icon>
+                    <ion-icon name="hardware-chip" class="text-xl theme-icon-bot hidden"></ion-icon>
+                </button>
+                <!-- Dropdown -->
+                <div id="theme-menu"
+                    class="absolute right-0 mt-2 w-36 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden hidden transform origin-top-right transition-all z-50">
+                    <button onclick="setTheme('light')"
+                        class="w-full px-4 py-3 text-left text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center gap-2">
+                        <ion-icon name="sunny" class="text-yellow-500"></ion-icon> Light
+                    </button>
+                    <button onclick="setTheme('dark')"
+                        class="w-full px-4 py-3 text-left text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center gap-2">
+                        <ion-icon name="moon" class="text-slate-500"></ion-icon> Dark
+                    </button>
+                    <button onclick="setTheme('bot')"
+                        class="w-full px-4 py-3 text-left text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center gap-2">
+                        <ion-icon name="hardware-chip" class="text-green-500"></ion-icon> Bot
+                    </button>
+                </div>
+            </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="relative pt-20 pb-32 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 md:px-8 text-center relative z-10">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-semibold uppercase tracking-wider mb-6 animate-enter"
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 border border-green-100 text-green-600 text-xs font-semibold uppercase tracking-wider mb-6 animate-enter"
                 style="animation-delay: 0.1s">
-                <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
                 Now with AI Matching V2
             </div>
 
             <h1 class="text-5xl md:text-7xl font-bold text-slate-900 tracking-tight mb-6 leading-tight animate-enter"
                 style="animation-delay: 0.2s">
                 Build your dream team <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">in seconds, not
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">in seconds,
+                    not
                     weeks.</span>
             </h1>
 
@@ -66,7 +141,7 @@
             <div class="flex flex-col md:flex-row items-center justify-center gap-4 animate-enter"
                 style="animation-delay: 0.4s">
                 <a href="auth.html"
-                    class="px-8 py-3.5 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 hover:bg-blue-700 hover:shadow-blue-600/30 transition-all transform hover:-translate-y-1 w-full md:w-auto">
+                    class="px-8 py-3.5 bg-green-600 text-white font-bold rounded-xl shadow-lg shadow-green-500/25 hover:bg-green-700 hover:shadow-green-600/30 transition-all transform hover:-translate-y-1 w-full md:w-auto">
                     Get Started Free
                 </a>
                 <a href="javascript:void(0)" id="watch-demo-btn"
@@ -76,27 +151,143 @@
                 </a>
             </div>
 
-            <!-- Dashboard Preview -->
-            <div class="mt-20 relative mx-auto max-w-5xl rounded-2xl border border-slate-200 shadow-2xl overflow-hidden animate-enter"
+            <!-- Dashboard Preview (Code-Based Mock) -->
+            <div class="mt-20 relative mx-auto max-w-5xl rounded-2xl border border-slate-200 shadow-2xl overflow-hidden animate-enter bg-[var(--bg-card)]"
                 style="animation-delay: 0.6s">
-                <div class="bg-slate-100 h-8 w-full flex items-center px-4 gap-2 border-b border-slate-200">
-                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
-                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
-                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                <!-- Browser Window Chrome -->
+                <div
+                    class="bg-[var(--bg-card-secondary)] h-8 w-full flex items-center px-4 gap-2 border-b border-[var(--border-light)]">
+                    <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
+                    <div
+                        class="ml-4 px-3 py-0.5 bg-[var(--bg-body)] rounded-md text-[10px] text-[var(--text-secondary)] border border-[var(--border-light)] flex-1 text-center font-mono">
+                        app.openconnect.com/dashboard
+                    </div>
                 </div>
-                <img src="https://placehold.co/1200x800/f8fafc/e2e8f0?text=Dashboard+Preview" class="w-full opacity-90">
-                <!-- In a real app, use a screenshot of the actual dashboard here -->
-                <div class="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent pointer-events-none"></div>
+
+                <!-- Dashboard UI -->
+                <div class="flex h-[450px]">
+                    <!-- Sidebar -->
+                    <div
+                        class="w-16 md:w-56 border-r border-[var(--border-light)] bg-[var(--bg-card)] flex flex-col p-4 hidden md:flex">
+                        <div class="space-y-1">
+                            <div
+                                class="h-8 w-full bg-[var(--bg-card-secondary)] rounded-md mb-6 border border-[var(--border-light)]">
+                            </div>
+
+                            <div
+                                class="h-8 w-full bg-blue-50/50 dark:bg-blue-900/10 border-l-2 border-blue-500 rounded-r-md flex items-center px-2 gap-2 text-sm text-[var(--primary)] font-medium">
+                                <ion-icon name="grid-outline"></ion-icon> Overview
+                            </div>
+                            <div
+                                class="h-8 w-full hover:bg-[var(--bg-card-secondary)] rounded-md flex items-center px-2 gap-2 text-sm text-[var(--text-secondary)] transition-colors cursor-pointer">
+                                <ion-icon name="briefcase-outline"></ion-icon> Projects
+                            </div>
+                            <div
+                                class="h-8 w-full hover:bg-[var(--bg-card-secondary)] rounded-md flex items-center px-2 gap-2 text-sm text-[var(--text-secondary)] transition-colors cursor-pointer">
+                                <ion-icon name="people-outline"></ion-icon> Team
+                            </div>
+                            <div
+                                class="h-8 w-full hover:bg-[var(--bg-card-secondary)] rounded-md flex items-center px-2 gap-2 text-sm text-[var(--text-secondary)] transition-colors cursor-pointer">
+                                <ion-icon name="chatbubbles-outline"></ion-icon> Messages
+                            </div>
+                            <div
+                                class="h-8 w-full mt-8 hover:bg-[var(--bg-card-secondary)] rounded-md flex items-center px-2 gap-2 text-sm text-[var(--text-secondary)] transition-colors cursor-pointer">
+                                <ion-icon name="settings-outline"></ion-icon> Settings
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="flex-1 bg-[var(--bg-body)] p-6 overflow-hidden relative">
+                        <!-- Header Mock -->
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <div class="h-5 w-32 bg-[var(--text-secondary)]/20 rounded mb-2"></div>
+                                <div class="h-3 w-48 bg-[var(--text-secondary)]/10 rounded"></div>
+                            </div>
+                            <div class="flex gap-2">
+                                <div class="w-8 h-8 rounded-full bg-[var(--border-light)]"></div>
+                                <div class="w-8 h-8 rounded-full bg-blue-500"></div>
+                            </div>
+                        </div>
+
+                        <!-- Stats Grid -->
+                        <div class="grid grid-cols-3 gap-4 mb-6">
+                            <div class="bg-[var(--bg-card)] p-4 rounded-xl border border-[var(--border-light)]">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div
+                                        class="h-8 w-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                                        <ion-icon name="trending-up"></ion-icon>
+                                    </div>
+                                    <div class="text-[10px] text-green-500 font-bold">+12%</div>
+                                </div>
+                                <div class="h-6 w-16 bg-[var(--text-primary)]/20 rounded mb-1"></div>
+                                <div class="h-3 w-24 bg-[var(--text-secondary)]/20 rounded"></div>
+                            </div>
+                            <div class="bg-[var(--bg-card)] p-4 rounded-xl border border-[var(--border-light)]">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div
+                                        class="h-8 w-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
+                                        <ion-icon name="people"></ion-icon>
+                                    </div>
+                                    <div class="text-[10px] text-[var(--text-secondary)]">Active</div>
+                                </div>
+                                <div class="h-6 w-12 bg-[var(--text-primary)]/20 rounded mb-1"></div>
+                                <div class="h-3 w-20 bg-[var(--text-secondary)]/20 rounded"></div>
+                            </div>
+                            <div class="bg-[var(--bg-card)] p-4 rounded-xl border border-[var(--border-light)]">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div
+                                        class="h-8 w-8 rounded-lg bg-green-500/10 text-green-500 flex items-center justify-center">
+                                        <ion-icon name="code-slash"></ion-icon>
+                                    </div>
+                                    <div class="text-[10px] text-[var(--text-secondary)]">New</div>
+                                </div>
+                                <div class="h-6 w-14 bg-[var(--text-primary)]/20 rounded mb-1"></div>
+                                <div class="h-3 w-24 bg-[var(--text-secondary)]/20 rounded"></div>
+                            </div>
+                        </div>
+
+                        <!-- Match Graph Mock -->
+                        <div
+                            class="bg-[var(--bg-card)] rounded-xl border border-[var(--border-light)] p-5 h-48 relative overflow-hidden">
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="h-4 w-32 bg-[var(--text-primary)]/20 rounded"></div>
+                                <div class="h-4 w-16 bg-[var(--border-light)] rounded-full"></div>
+                            </div>
+                            <!-- Fake Graph Bars -->
+                            <div class="flex items-end gap-3 h-28 px-2 pb-2">
+                                <div class="flex-1 bg-blue-500/20 rounded-t-sm h-[40%]"></div>
+                                <div class="flex-1 bg-blue-500/40 rounded-t-sm h-[70%]"></div>
+                                <div class="flex-1 bg-blue-500 rounded-t-sm h-[55%] relative group">
+                                    <div
+                                        class="absolute -top-8 left-1/2 -translate-x-1/2 bg-[var(--text-primary)] text-[var(--bg-card)] text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                                        98%</div>
+                                </div>
+                                <div class="flex-1 bg-blue-500/30 rounded-t-sm h-[85%]"></div>
+                                <div class="flex-1 bg-blue-500/10 rounded-t-sm h-[30%]"></div>
+                                <div class="flex-1 bg-blue-500/20 rounded-t-sm h-[60%]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overlay Gradient -->
+                <div
+                    class="absolute inset-0 bg-gradient-to-t from-[var(--bg-card-secondary)]/10 to-transparent pointer-events-none">
+                </div>
             </div>
         </div>
 
         <!-- Background Elements -->
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
             <div
-                class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-100/50 rounded-full blur-3xl opacity-60">
+                class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-green-100/50 rounded-full blur-3xl opacity-60">
             </div>
             <div
-                class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-100/50 rounded-full blur-3xl opacity-60">
+                class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-100/50 rounded-full blur-3xl opacity-60">
             </div>
         </div>
     </section>
@@ -113,9 +304,9 @@
             <div class="grid md:grid-cols-3 gap-8">
                 <!-- Card 1 -->
                 <div
-                    class="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-200 transition-all hover:shadow-lg group">
+                    class="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:border-green-200 transition-all hover:shadow-lg group">
                     <div
-                        class="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-2xl text-blue-600 mb-6 group-hover:scale-110 transition-transform">
+                        class="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-2xl text-green-600 mb-6 group-hover:scale-110 transition-transform">
                         <ion-icon name="color-wand"></ion-icon>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-2">AI Matching Engine</h3>
@@ -201,6 +392,62 @@
                     demoModal.open();
                 });
             }
+        });
+    </script>
+    <script>
+        // Theme Logic
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeMenu = document.getElementById('theme-menu');
+        const themeIcons = {
+            light: document.querySelector('.theme-icon-light'),
+            dark: document.querySelector('.theme-icon-dark'),
+            bot: document.querySelector('.theme-icon-bot')
+        };
+
+        function toggleThemeMenu() {
+            themeMenu.classList.toggle('hidden');
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!themeToggleBtn.contains(e.target) && !themeMenu.contains(e.target)) {
+                themeMenu.classList.add('hidden');
+            }
+        });
+
+        themeToggleBtn.addEventListener('click', toggleThemeMenu);
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+
+            // Update Icon
+            Object.values(themeIcons).forEach(icon => icon.classList.add('hidden'));
+            themeIcons[theme].classList.remove('hidden');
+
+            // Close Menu
+            themeMenu.classList.add('hidden');
+
+            // Dispatch event for other components if needed
+            window.dispatchEvent(new Event('themeChanged'));
+        }
+
+        // Initialize
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setTheme(savedTheme);
+    </script>
+    <script>
+        // Initial Loader Logic
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('initial-loader');
+            // Wait for typing animation (2.5s) to complete + a moment to breathe
+            setTimeout(() => {
+                loader.classList.add('loader-hidden');
+                // Remove from DOM after longer transition (0.8s)
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 800);
+            }, 3000);
         });
     </script>
 </body>

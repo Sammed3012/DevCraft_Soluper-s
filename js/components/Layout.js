@@ -1,6 +1,14 @@
 export class Layout {
-    constructor(activePage = 'dashboard') {
+    constructor(activePage = 'dashboard', theme = 'green') {
         this.activePage = activePage;
+        this.theme = theme;
+
+        // Normalize
+        if (this.activePage === 'explore') this.activePage = 'ideas';
+
+        // Apply Global Theme for Loader & Custom CSS
+        document.body.dataset.theme = this.theme;
+
         this.render();
     }
 
@@ -8,68 +16,115 @@ export class Layout {
         const body = document.querySelector('body');
         const content = body.innerHTML;
 
-        // Wrap existing content in grid
-        // Using CSS Grid for robust sidebar layout
+        // CHECK LOCAL STORAGE FOR PREFERENCE
+        let isCollapsed = false;
+        try {
+            isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        } catch (e) { }
+
+        const gridCols = isCollapsed ? 'md:grid-cols-[0px_1fr]' : 'md:grid-cols-[260px_1fr]';
+        const sidebarHidden = isCollapsed ? 'hidden' : 'flex';
+
+        // THEME MAPPING FOR BRANDING (Logo, Buttons)
+        const themeColors = {
+            green: { from: 'from-green-500', to: 'to-emerald-600', shadow: 'shadow-green-500/20', bg: 'bg-green-600' },
+            indigo: { from: 'from-indigo-500', to: 'to-purple-600', shadow: 'shadow-indigo-500/20', bg: 'bg-indigo-600' },
+            teal: { from: 'from-teal-500', to: 'to-emerald-600', shadow: 'shadow-teal-500/20', bg: 'bg-teal-600' },
+            purple: { from: 'from-purple-500', to: 'to-pink-600', shadow: 'shadow-purple-500/20', bg: 'bg-purple-600' }
+        };
+        const t = themeColors[this.theme] || themeColors['green'];
+
+        // WRAP EXISTING CONTENT IN GRID
         body.innerHTML = `
-            <div class="md:grid md:grid-cols-[260px_1fr] min-h-screen bg-gray-50">
-                <!-- Sidebar (Desktop) -->
-                <!-- Sticky sourcing: top-0 h-screen ensures it stays fixed in view while scrolling main content if needed, 
-                     but logically in grid it just takes the column height. 
-                     'sticky top-0 h-screen' is the standard tailwind pattern for this. -->
-                <aside class="hidden md:flex flex-col border-r border-slate-200 bg-white h-screen sticky top-0 left-0 z-30 pt-6 px-4 overflow-y-auto">
-                    <!-- Brand -->
-                    <div class="mb-8 px-2 flex items-center gap-2 flex-shrink-0">
-                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white text-lg font-bold shadow-sm">
+            <div id="app-layout" class="md:grid ${gridCols} min-h-screen bg-gray-50 transition-all duration-300 ease-in-out">
+                <!-- SIDEBAR (DESKTOP) -->
+                <aside id="app-sidebar" class="hidden md:${sidebarHidden} flex-col border-r border-slate-200 bg-white h-screen sticky top-0 left-0 z-30 pt-6 px-4 overflow-y-auto font-sans transition-all duration-300 origin-left">
+                    <!-- BRAND -->
+                    <div class="mb-6 px-2 flex items-center gap-2 flex-shrink-0">
+                        <div class="w-8 h-8 bg-gradient-to-br ${t.from} ${t.to} rounded-lg flex items-center justify-center text-white text-lg font-bold shadow-lg ${t.shadow}">
                             <ion-icon name="prism"></ion-icon>
                         </div>
-                        <span class="text-lg font-bold text-slate-900 tracking-tight">OpenConnect</span>
+                        <span class="text-xl font-bold text-slate-900 tracking-tight">OpenConnect</span>
                     </div>
 
-                    <!-- Navigation -->
-                    <nav class="flex-1 space-y-1">
-                        ${this.renderNavItem('Dashboard', 'dashboard.html', 'grid-outline', 'grid')}
-                        ${this.renderNavItem('Find Matches', 'matches.html', 'telescope-outline', 'telescope')}
-                        ${this.renderNavItem('My Projects', 'profile.html', 'folder-open-outline', 'folder-open')}
-                        ${this.renderNavItem('Create Project', 'create-idea.html', 'add-circle-outline', 'add-circle')}
+                    <!-- CTA -->
+                    <div class="mb-8">
+                        <a href="create-idea.html" class="flex items-center justify-center gap-2 w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 group">
+                            <ion-icon name="add-circle-outline" class="text-xl group-hover:rotate-90 transition-transform"></ion-icon>
+                            <span>New Project</span>
+                        </a>
+                    </div>
+
+                    <!-- NAVIGATION -->
+                    <nav class="flex-1 space-y-6">
+                        
+                        <!-- MAIN MENU -->
+                        <div>
+                            <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Menu</p>
+                            <div class="space-y-1">
+                                ${this.renderNavItem('Dashboard', 'dashboard', 'grid-outline', 'grid')}
+                                ${this.renderNavItem('Explore Ideas', 'ideas', 'compass-outline', 'compass')}
+                                ${this.renderNavItem('Find Matches', 'matches', 'telescope-outline', 'telescope')}
+                                ${this.renderNavItem('Communities', 'communities', 'people-outline', 'people')}
+                            </div>
+                        </div>
+
+                        <!-- PERSONAL -->
+                        <div>
+                            <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Personal</p>
+                            <div class="space-y-1">
+                                ${this.renderNavItem('My Projects', 'profile', 'folder-open-outline', 'folder-open')}
+                                ${this.renderNavItem('Messages', 'messages', 'chatbubble-ellipses-outline', 'chatbubble-ellipses')}
+                                ${this.renderNavItem('Settings', 'settings', 'settings-outline', 'settings')}
+                            </div>
+                        </div>
+
                     </nav>
 
-                    <!-- User Profile -->
+                    <!-- USER PROFILE -->
                     <div class="mt-auto border-t border-slate-100 pt-4 pb-6 flex-shrink-0">
-                         <div class="flex items-center gap-3 px-2 py-2 cursor-pointer hover:bg-slate-50 rounded-lg transition-colors group" onclick="window.location.href='profile.html'">
-                            <img id="sidebar-avatar" src="https://ui-avatars.com/api/?name=User" class="w-9 h-9 rounded-full border border-slate-200 shadow-sm object-cover">
+                         <div class="flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-slate-50 rounded-xl transition-colors group" onclick="window.location.href='profile.html'">
+                            <img id="sidebar-avatar" src="https://ui-avatars.com/api/?name=User" class="w-10 h-10 rounded-full border border-slate-200 shadow-sm object-cover bg-white">
                             <div class="flex-1 overflow-hidden">
-                                <p class="text-sm font-semibold text-slate-700 truncate group-hover:text-blue-600 transition-colors" id="sidebar-name">Loading...</p>
-                                <p class="text-xs text-slate-400 truncate">Free Plan</p>
+                                <p class="text-sm font-bold text-slate-700 truncate group-hover:text-green-600 transition-colors" id="sidebar-name">Loading...</p>
+                                <p class="text-xs text-slate-500 truncate">View Profile</p>
                             </div>
-                            <button onclick="logout()" class="text-slate-400 hover:text-red-500 transition-colors">
-                                <ion-icon name="log-out-outline"></ion-icon>
+                            <button onclick="event.stopPropagation(); logout()" class="text-slate-400 hover:text-red-500 transition-colors p-1.5 hover:bg-red-50 rounded-lg">
+                                <ion-icon name="log-out-outline" class="text-lg"></ion-icon>
                             </button>
                         </div>
                     </div>
                 </aside>
 
-                <!-- Main Content Area -->
+                <!-- MAIN CONTENT AREA -->
                 <main class="min-h-screen flex flex-col relative w-full overflow-x-hidden">
                     
-                    <!-- Topbar (Mobile + Desktop) -->
+                    <!-- TOPBAR -->
                     <header class="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-slate-200 px-6 py-3 flex items-center justify-between h-16 flex-shrink-0">
-                        <!-- Mobile Toggle -->
-                        <div class="md:hidden flex items-center gap-2">
-                            <!-- In future: Add toggle handling -->
-                            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white text-sm font-bold shadow-sm">
-                                <ion-icon name="prism"></ion-icon>
+                        
+                        <div class="flex items-center gap-4">
+                            <!-- Toggle Sidebar Button (Desktop) -->
+                            <button onclick="window.toggleSidebar()" class="hidden md:flex items-center justify-center p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors" title="Toggle Sidebar">
+                                <ion-icon name="menu-outline" class="text-2xl"></ion-icon>
+                            </button>
+
+                             <!-- Mobile Brand -->
+                            <div class="md:hidden flex items-center gap-2">
+                                <div class="w-8 h-8 ${t.bg} rounded-lg flex items-center justify-center text-white text-sm font-bold shadow-sm">
+                                    <ion-icon name="prism"></ion-icon>
+                                </div>
+                                <span class="font-bold text-slate-900">OpenConnect</span>
                             </div>
-                            <span class="font-bold text-slate-900">OpenConnect</span>
                         </div>
 
-                        <!-- Search (Desktop) -->
-                        <div class="hidden md:flex flex-1 max-w-lg relative mx-auto">
+                        <!-- SEARCH -->
+                        <div class="hidden md:flex flex-1 max-w-lg relative mx-auto ml-8">
                             <ion-icon name="search-outline" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></ion-icon>
                             <input type="text" placeholder="Search projects, skills, or people..." 
-                                class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all">
+                                class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-100 focus:border-green-500 transition-all">
                         </div>
 
-                        <!-- Actions -->
+                        <!-- ACTIONS -->
                         <div class="flex items-center gap-4 ml-auto">
                             <button class="relative p-2 text-slate-400 hover:text-slate-600 transition-colors">
                                 <ion-icon name="notifications-outline" class="text-xl"></ion-icon>
@@ -81,15 +136,15 @@ export class Layout {
                         </div>
                     </header>
 
-                    <!-- Page Content -->
+                    <!-- PAGE CONTENT -->
                     <div class="p-6 md:p-8 max-w-7xl mx-auto w-full flex-1 animate-enter">
                         ${content}
                     </div>
 
-                    <!-- Mobile Bottom Nav spacer -->
+                    <!-- MOBILE BOTTOM NAV SPACER -->
                     <div class="h-20 md:hidden"></div>
 
-                    <!-- Mobile Bottom Nav -->
+                    <!-- MOBILE BOTTOM NAV -->
                     <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-3 flex justify-between items-center z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] pb-safe">
                         ${this.renderMobileNavItem('dashboard.html', 'grid-outline', 'grid', 'Dashboard')}
                         ${this.renderMobileNavItem('matches.html', 'telescope-outline', 'telescope', 'Matches')}
@@ -106,14 +161,50 @@ export class Layout {
         `;
 
         this.loadUserData();
+
+        // Attach Logic globally
+        window.toggleSidebar = () => {
+            const layout = document.getElementById('app-layout');
+            const sidebar = document.getElementById('app-sidebar');
+
+            // Current state (checking by class presence)
+            const isHidden = sidebar.classList.contains('hidden');
+
+            if (isHidden) {
+                layout.classList.remove('md:grid-cols-[0px_1fr]');
+                layout.classList.add('md:grid-cols-[260px_1fr]');
+                sidebar.classList.remove('hidden');
+                sidebar.classList.add('flex');
+                localStorage.setItem('sidebarCollapsed', 'false');
+            } else {
+                layout.classList.remove('md:grid-cols-[260px_1fr]');
+                layout.classList.add('md:grid-cols-[0px_1fr]');
+                sidebar.classList.remove('flex');
+                sidebar.classList.add('hidden');
+                localStorage.setItem('sidebarCollapsed', 'true');
+            }
+        }
     }
 
-    renderNavItem(label, href, iconOutline, iconSolid) {
-        const isActive = window.location.pathname.includes(href) || (href === 'dashboard.html' && window.location.pathname === '/');
-        // Logic for exact match highlighting can be refined
+    renderNavItem(label, key, iconOutline, iconSolid) {
+        const isActive = (this.activePage === key);
+
+        // Dynamic Classes based on Theme
+        const themeClasses = {
+            green: 'bg-green-50 text-green-700 border-green-600',
+            indigo: 'bg-indigo-50 text-indigo-700 border-indigo-600',
+            teal: 'bg-teal-50 text-teal-700 border-teal-600',
+            purple: 'bg-purple-50 text-purple-700 border-purple-600'
+        };
+        const activeThemeClass = themeClasses[this.theme] || themeClasses['green'];
+
         const activeClass = isActive
-            ? 'bg-blue-50 text-blue-700 font-semibold border-r-2 border-blue-600'
+            ? `${activeThemeClass} font-semibold border-r-2`
             : 'text-slate-500 font-medium hover:bg-slate-50 hover:text-slate-900';
+
+        // Construct href based on key
+        let href = `${key}.html`;
+        if (key === 'dashboard') href = 'dashboard.html';
 
         return `
         <a href="${href}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg mb-1 transition-all ${activeClass}">
@@ -124,8 +215,18 @@ export class Layout {
 
     renderMobileNavItem(href, iconOutline, iconSolid, label) {
         const isActive = window.location.pathname.includes(href);
+
+        // Simple mapping for text color
+        const textColors = {
+            green: 'text-green-600',
+            indigo: 'text-indigo-600',
+            teal: 'text-teal-600',
+            purple: 'text-purple-600'
+        };
+        const activeColor = textColors[this.theme] || 'text-green-600';
+
         return `
-        <a href="${href}" class="flex flex-col items-center gap-1 ${isActive ? 'text-blue-600' : 'text-slate-400'}">
+        <a href="${href}" class="flex flex-col items-center gap-1 ${isActive ? activeColor : 'text-slate-400'}">
             <ion-icon name="${isActive ? iconSolid : iconOutline}" class="text-2xl"></ion-icon>
             <span class="text-[10px] font-medium">${label}</span>
         </a>`;

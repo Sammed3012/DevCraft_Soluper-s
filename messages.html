@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - OpenConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-gray-50 text-slate-900 font-sans antialiased overflow-hidden h-screen">
+    <!-- Navbar injected via Layout -->
+
+    <!-- Main Container - Fixed Height for Chat App feel -->
+    <div id="messages-content"
+        class="max-w-7xl mx-auto h-[calc(100vh-64px)] md:h-screen pt-0 md:pt-0 flex animate-enter">
+
+        <!-- Left Sidebar: Conversations -->
+        <div class="w-full md:w-80 lg:w-96 bg-white border-r border-slate-200 flex flex-col h-full z-10"
+            id="chat-sidebar">
+
+            <!-- Header -->
+            <div class="p-4 border-b border-slate-100 flex justify-between items-center">
+                <h1 class="text-xl font-bold text-slate-900">Messages</h1>
+                <button
+                    class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors">
+                    <ion-icon name="create-outline" class="text-lg"></ion-icon>
+                </button>
+            </div>
+
+            <!-- Search -->
+            <div class="p-4 pt-2">
+                <div class="relative">
+                    <ion-icon name="search-outline"
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></ion-icon>
+                    <input type="text" placeholder="Search messages..."
+                        class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
+                </div>
+            </div>
+
+            <!-- Conversation List -->
+            <div class="flex-1 overflow-y-auto" id="conversation-list">
+                <!-- Data loaded via JS to allow interactivity -->
+                <div class="flex flex-col items-center justify-center h-40 text-slate-400">
+                    <ion-icon name="chatbubbles-outline" class="text-3xl mb-2 opacity-50"></ion-icon>
+                    <span class="text-sm">Loading users...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Chat Window -->
+        <div class="hidden md:flex flex-1 flex-col bg-slate-50 h-full relative" id="chat-window">
+
+            <!-- Default State (No Chat Selected) -->
+            <div id="no-chat-selected"
+                class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-slate-50/50 backdrop-blur-sm z-0">
+                <div
+                    class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-green-600 mb-6 shadow-sm">
+                    <ion-icon name="chatbubble-ellipses" class="text-4xl"></ion-icon>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Your Messages</h2>
+                <p class="text-slate-500 max-w-sm">Select a conversation from the sidebar to start chatting or connect
+                    with new collaborators.</p>
+                <a href="matches.html"
+                    class="mt-8 px-6 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-transform hover:-translate-y-0.5 shadow-lg flex items-center gap-2">
+                    <ion-icon name="telescope-outline"></ion-icon> Find People
+                </a>
+            </div>
+
+            <!-- Active Chat Interface (Hidden by default) -->
+            <div id="active-chat-container" class="hidden flex-col h-full w-full z-10 bg-white">
+
+                <!-- Chat Header -->
+                <div
+                    class="h-16 border-b border-slate-200 px-6 flex items-center justify-between bg-white/80 backdrop-blur z-20 sticky top-0">
+                    <div class="flex items-center gap-3">
+                        <button class="md:hidden mr-2 text-slate-500" onclick="toggleMobileChat()">
+                            <ion-icon name="arrow-back" class="text-2xl"></ion-icon>
+                        </button>
+                        <div class="relative">
+                            <img id="chat-header-avatar" src=""
+                                class="w-10 h-10 rounded-full border border-slate-200 bg-slate-100 object-cover">
+                            <div
+                                class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white">
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-sm" id="chat-header-name">User</h3>
+                            <p class="text-[10px] text-green-600 font-bold bg-green-50 px-1.5 rounded w-fit">Online</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 text-slate-400">
+                        <button class="hover:text-slate-600 transition-colors"><ion-icon name="videocam-outline"
+                                class="text-xl"></ion-icon></button>
+                        <button class="hover:text-slate-600 transition-colors"><ion-icon
+                                name="information-circle-outline" class="text-xl"></ion-icon></button>
+                    </div>
+                </div>
+
+                <!-- Messages Area -->
+                <div class="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50 scroll-smooth" id="messages-feed">
+                    <!-- Messages injected here -->
+                </div>
+
+                <!-- Input Area -->
+                <div class="p-4 border-t border-slate-200 bg-white">
+                    <form onsubmit="event.preventDefault(); sendMessage();" class="flex gap-3 items-end">
+                        <button type="button"
+                            class="p-2 text-slate-400 hover:text-slate-600 transition-colors rounded-full hover:bg-slate-100">
+                            <ion-icon name="add-circle-outline" class="text-2xl"></ion-icon>
+                        </button>
+                        <div
+                            class="flex-1 bg-slate-100 rounded-2xl px-4 py-2 border border-transparent focus-within:border-green-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-green-100 transition-all">
+                            <textarea id="message-input" rows="1"
+                                class="w-full bg-transparent border-none focus:ring-0 text-sm text-slate-900 placeholder-slate-400 resize-none max-h-32 py-1"
+                                placeholder="Type a message..."></textarea>
+                        </div>
+                        <button type="submit"
+                            class="p-3 bg-green-600 text-white rounded-full hover:bg-green-700 shadow-md hover:shadow-lg transition-transform active:scale-95 flex items-center justify-center">
+                            <ion-icon name="send" class="text-lg translate-x-0.5"></ion-icon>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+
+    <script type="module">
+        import { Layout } from './js/components/Layout.js';
+
+        // 1. Render Layout
+        new Layout('messages');
+
+        // 2. Chat Logic
+        let activeChatId = null;
+        let replyToMsg = null;
+        const messagesStore = {}; // Local store for messages (in memory for demo, normally fetched)
+
+        async function initMessages() {
+            const listContainer = document.getElementById('conversation-list');
+
+            // Auth Check
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                listContainer.innerHTML = '<div class="p-4 text-center text-sm text-slate-400">Please sign in to view messages.</div>';
+                return;
+            }
+
+            // Fetch Real Users from Supabase 'profiles' table (excluding current user)
+            const { data: profiles, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .neq('id', user.id)
+                .limit(20); // Limit just for demo performance
+
+            if (error || !profiles || profiles.length === 0) {
+                listContainer.innerHTML = `<div class="flex flex-col items-center justify-center p-8 text-slate-400 text-center">
+                    <ion-icon name="people-outline" class="text-3xl mb-2 opacity-50"></ion-icon>
+                    <span class="text-sm">No other users found yet. Invite friends!</span>
+                </div>`;
+                return;
+            }
+
+            // Render Profiles as Conversations
+            listContainer.innerHTML = profiles.map(p => {
+                // Determine Avatar
+                const avatar = p.avatar_url || `https://ui-avatars.com/api/?name=${p.full_name}`;
+                // Randomly assign 'online' status for liveliness
+                const isOnline = Math.random() > 0.6;
+
+                return `
+                <div onclick="openChat('${p.id}', '${p.full_name}', '${avatar}')" 
+                     id="chat-item-${p.id}" 
+                     class="flex items-center gap-3 p-4 hover:bg-slate-50 cursor-pointer transition-colors border-l-4 border-transparent group animate-fade-in">
+                    <div class="relative">
+                        <img src="${avatar}" class="w-12 h-12 rounded-full border border-slate-100 object-cover bg-white">
+                        ${isOnline ? '<div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white shadow-sm"></div>' : ''}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <h3 class="font-bold text-slate-900 truncate text-sm group-hover:text-green-600 transition-colors">${p.full_name}</h3>
+                            <span class="text-[10px] text-slate-400 font-medium opacity-0 group-hover:opacity-100 transition-opacity">Just now</span>
+                        </div>
+                        <p class="text-xs text-slate-500 truncate group-hover:text-slate-700">Tap to start chatting...</p>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // Global functions for interaction
+        window.openChat = (id, name, avatar) => {
+            activeChatId = id;
+
+            // UI Switch & Responsive Logic
+            document.getElementById('no-chat-selected').classList.add('hidden');
+            const chatContainer = document.getElementById('active-chat-container');
+            chatContainer.classList.remove('hidden');
+            chatContainer.classList.add('flex'); // Ensure flex display
+
+            if (window.innerWidth < 768) {
+                document.getElementById('chat-sidebar').classList.add('hidden');
+                document.getElementById('chat-window').classList.remove('hidden');
+                document.getElementById('chat-window').classList.add('flex', 'w-full');
+            }
+
+            // Highlight Logic
+            document.querySelectorAll('[id^="chat-item-"]').forEach(el => {
+                el.classList.remove('bg-green-50', 'border-green-500');
+                el.classList.add('border-transparent');
+            });
+            const activeEl = document.getElementById(`chat-item-${id}`);
+            if (activeEl) {
+                activeEl.classList.add('bg-green-50', 'border-green-500');
+                activeEl.classList.remove('border-transparent');
+            }
+
+            // Header Update
+            document.getElementById('chat-header-name').textContent = name;
+            document.getElementById('chat-header-avatar').src = avatar;
+
+            // Load Messages for this user ID
+            renderMessages(id);
+        };
+
+        function renderMessages(id) {
+            const feed = document.getElementById('messages-feed');
+            const msgs = messagesStore[id] || [];
+
+            if (msgs.length === 0) {
+                // Empty state specific to this user
+                feed.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full text-center py-10 opacity-60">
+                        <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4 text-3xl shadow-sm">👋</div>
+                        <p class="text-slate-500 text-sm font-medium">Say hello to start the conversation!</p>
+                        <p class="text-slate-400 text-xs mt-1">Messages are end-to-end encrypted.</p>
+                    </div>`;
+            } else {
+                feed.innerHTML = msgs.map(m => createMessageHTML(m)).join('');
+            }
+            feed.scrollTop = feed.scrollHeight;
+        }
+
+        function createMessageHTML(m) {
+            const isMe = m.sender === 'me';
+            // Reply context rendering
+            const replyBlock = m.replyContext ? `
+                <div class="text-xs ${isMe ? 'text-slate-300 bg-slate-800/50' : 'text-slate-500 bg-slate-100'} border-l-2 ${isMe ? 'border-green-400' : 'border-slate-300'} pl-2 py-1 mb-1 rounded max-w-full truncate opacity-90">
+                    <ion-icon name="arrow-undo" class="align-middle mr-1 text-[10px]"></ion-icon> Re: ${m.replyContext}
+                </div>
+            ` : '';
+
+            return `
+            <div class="flex ${isMe ? 'justify-end' : 'justify-start'} mb-4 animate-fade-in-up group items-end gap-2 w-full">
+                ${!isMe ? `<button onclick="replyTo('${m.text.replace(/'/g, "\\'")}')" class="opacity-0 group-hover:opacity-100 p-1.5 text-slate-300 hover:text-green-600 hover:bg-green-50 rounded-full transition-all order-last mb-2"><ion-icon name="arrow-undo" class="text-lg"></ion-icon></button>` : ''}
+                
+                <div class="max-w-[75%] flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+                    <div class="${isMe ? 'bg-slate-900 text-white rounded-2xl rounded-br-sm' : 'bg-white border border-slate-200 text-slate-800 rounded-2xl rounded-bl-sm'} px-5 py-3 shadow-sm relative group-message w-auto">
+                        ${replyBlock}
+                        <p class="text-sm leading-relaxed whitespace-pre-wrap break-words">${m.text}</p>
+                    </div>
+                     <span class="text-[10px] text-slate-400 mt-1 px-1 opacity-0 group-hover:opacity-100 transition-opacity">${m.time}</span>
+                </div>
+
+                ${isMe ? `<button onclick="replyTo('${m.text.replace(/'/g, "\\'")}')" class="opacity-0 group-hover:opacity-100 p-1.5 text-slate-300 hover:text-green-600 hover:bg-green-50 rounded-full transition-all order-first mb-2"><ion-icon name="arrow-undo" class="text-lg"></ion-icon></button>` : ''}
+            </div>
+            `;
+        }
+
+        window.replyTo = (text) => {
+            // Truncate for safety
+            const safeText = text.length > 50 ? text.substring(0, 50) + '...' : text;
+            replyToMsg = safeText;
+
+            // Remove existing reply banner if any
+            const existingBanner = document.getElementById('reply-banner');
+            if (existingBanner) existingBanner.remove();
+
+            // Create banner
+            const banner = document.createElement('div');
+            banner.id = 'reply-banner';
+            banner.className = 'flex justify-between items-center px-4 py-2 bg-slate-50 border-t border-slate-200 text-xs text-slate-600 mb-0 rounded-t-lg mx-3 border-x animate-slide-up';
+            banner.innerHTML = `
+                <div class="flex items-center gap-2 truncate">
+                    <ion-icon name="arrow-undo" class="text-green-500"></ion-icon>
+                    <span class="truncate max-w-[200px]">Replying to: <strong>${safeText}</strong></span>
+                </div>
+                <button onclick="cancelReply()" class="w-6 h-6 rounded-full hover:bg-red-100 hover:text-red-500 flex items-center justify-center transition-colors"><ion-icon name="close"></ion-icon></button>
+            `;
+
+            // Insert before input form
+            const form = document.querySelector('form');
+            form.parentNode.insertBefore(banner, form);
+            document.getElementById('message-input').focus();
+        };
+
+        window.cancelReply = () => {
+            replyToMsg = null;
+            const banner = document.getElementById('reply-banner');
+            if (banner) banner.remove();
+        };
+
+        window.toggleMobileChat = () => {
+            const sidebar = document.getElementById('chat-sidebar');
+            const window = document.getElementById('chat-window');
+            sidebar.classList.remove('hidden');
+            window.classList.add('hidden');
+            window.classList.remove('flex');
+        };
+
+        window.sendMessage = () => {
+            const input = document.getElementById('message-input');
+            const text = input.value.trim();
+            if (!text || !activeChatId) return;
+
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            // Create msg object
+            const msg = {
+                id: Date.now(),
+                sender: 'me', // Sent by current user
+                text: text,
+                time: time,
+                replyContext: replyToMsg // Attach context
+            };
+
+            // Save to Store
+            if (!messagesStore[activeChatId]) messagesStore[activeChatId] = [];
+            messagesStore[activeChatId].push(msg);
+
+            // Render Message
+            const feed = document.getElementById('messages-feed');
+
+            // If it was empty state view, clear it
+            if (feed.querySelector('.text-center')) feed.innerHTML = '';
+
+            feed.insertAdjacentHTML('beforeend', createMessageHTML(msg));
+            feed.scrollTop = feed.scrollHeight;
+
+            // Reset Input & Reply Logic
+            input.value = '';
+            cancelReply();
+
+            // Simulate Reply from 'Them' after delay
+            setTimeout(() => {
+                const replyMsg = {
+                    id: Date.now() + 1,
+                    sender: 'them',
+                    text: `Thanks for the message! Let's collaborate.`,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+                if (!messagesStore[activeChatId]) messagesStore[activeChatId] = [];
+                messagesStore[activeChatId].push(replyMsg);
+
+                // Only render if still on this chat screen
+                // Simple check: check activeChatId variable
+                // Since this closure captures activeChatId... wait, activeChatId is global let. It will check current value.
+                // We need to capture the ID of the chat this msg belongs to.
+                // Actually if user switches chat, activeChatId changes.
+                // So:
+                const currentChatId = activeChatId; // Check if still active
+                if (currentChatId === activeChatId) {
+                    const feed = document.getElementById('messages-feed'); // Re-get feed
+                    if (feed) {
+                        if (feed.querySelector('.text-center')) feed.innerHTML = ''; // Clear empty state if needed again
+                        feed.insertAdjacentHTML('beforeend', createMessageHTML(replyMsg));
+                        feed.scrollTop = feed.scrollHeight;
+                    }
+                }
+            }, 1500); // 1.5s delay
+        };
+
+        // Initialize Data
+        initMessages();
+
+        // Textarea auto-resize
+        const tx = document.getElementsByTagName("textarea");
+        for (let i = 0; i < tx.length; i++) {
+            tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
+            tx[i].addEventListener("input", OnInput, false);
+            // Check enter key to send
+            tx[i].addEventListener("keydown", function (e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+        }
+        function OnInput() {
+            this.style.height = "auto";
+            this.style.height = (this.scrollHeight) + "px";
+        }
+    </script>
+</body>
+
+</html>

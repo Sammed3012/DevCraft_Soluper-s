@@ -96,7 +96,7 @@ async function loadUserProjects(userId) {
         <div class="col-span-full py-12 text-center text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">
             <ion-icon name="folder-open-outline" class="text-3xl mb-2 text-slate-300"></ion-icon>
             <p class="text-sm">No projects created yet.</p>
-            <a href="create-idea.html" class="text-blue-600 font-bold hover:underline mt-2 inline-block text-xs uppercase tracking-wide">Start a Project</a>
+            <a href="create-idea.html" class="text-green-600 font-bold hover:underline mt-2 inline-block text-xs uppercase tracking-wide">Start a Project</a>
         </div>`;
         return;
     }
@@ -112,7 +112,7 @@ async function loadUserProjects(userId) {
         </div>
         
         <div class="p-4 flex flex-col flex-1">
-            <h3 class="font-bold text-slate-900 mb-1 truncate group-hover:text-blue-600 transition-colors">${idea.title}</h3>
+            <h3 class="font-bold text-slate-900 mb-1 truncate group-hover:text-green-600 transition-colors">${idea.title}</h3>
             <p class="text-xs text-slate-500 mb-4 line-clamp-2 leading-relaxed">${idea.description}</p>
             
             <div class="mt-auto flex items-center justify-between pt-3 border-t border-slate-50">
